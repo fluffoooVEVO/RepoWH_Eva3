@@ -1,11 +1,19 @@
 package Evaluacion2FS.Figuritas.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
 
 @Configuration
 public class SwaggerConfig {
-    return new OPENAPI()
-    .info(new Info)()
-    .title
-
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+                .info(new Info()
+                        .title("Figuritas API")
+                        .version("1.0")
+                        .description("API para la gestión de figuritas"));
+    }
 }
