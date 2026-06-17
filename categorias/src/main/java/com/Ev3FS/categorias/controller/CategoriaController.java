@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.Ev3FS.categorias.DTO.CategoriaDTO;
+import com.Ev3FS.categorias.assemblers.CategoriaModelAssembler;
 import com.Ev3FS.categorias.service.CategoriaService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,6 +42,8 @@ public class CategoriaController {
     
     @Autowired
     private CategoriaService categoriaService;
+    @Autowired
+    private CategoriaModelAssembler assembler;
 
     @GetMapping
     @Operation(summary="Obtener todas las categorias",description="Muestra todas las categorias existentes")
@@ -48,35 +51,35 @@ public class CategoriaController {
     public ResponseEntity<?> getAll() {
         List<CategoriaDTO> categorias = categoriaService.obtenerTodasDTO();
         if (categorias.isEmpty()) {
-            EntityModel<?> vacio = EntityModel.of(
+            EntityModel<?>vacio=EntityModel.of(
                 Map.of("mensaje", "No hay categorias"), // mensaje cuando la lista esta vacia
                 linkTo(methodOn(CategoriaController.class)
                     .guardarCategoria(null)) // apunta al metodo guardar
-                    .withRel("ver ids actuales") // le pone el nombre al link
+                    .withRel("crear-categoria") // le pone el nombre al link
             );
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(vacio); // devuelve 204 con el link
         }
         return new ResponseEntity<>(categorias, HttpStatus.OK); // devuelve la lista normal
     }
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Obtener una categoria", description = "Obtiene una categoria con el parametro *id*")
-    @ApiResponse(responseCode="400",description="Hubo un error *Tipeo quizas*?",content=@Content)
-    @ApiResponse(responseCode="404",description="Categoria no encontrada",content=@Content)
-    public ResponseEntity<?> buscarPorId(@PathVariable Integer id) {
-        try {
-            if (id<=0) {
-                Link link = linkTo(methodOn(CategoriaController.class)
-                    .buscarPorId(id))
-                    .withRel("reintentar");
-                EntityModel<?> error = EntityModel.of(
-                    Map.of("mensaje", "Hubo un error en la id buscada no puede ser menor a 1"), link
-                );
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
-            }
-            CategoriaDTO categoria = categoriaService.obtenerPorID(id);
-            return new ResponseEntity<>(categoria, HttpStatus.OK);
-        } catch (RuntimeException e) {
+@GetMapping("/{id}")
+@Operation(summary = "Obtener una categoria", description = "Obtiene una categoria con el parametro *id*")
+@ApiResponse(responseCode="400",description="Hubo un error *Tipeo quizas*?",content=@Content)
+@ApiResponse(responseCode="404",description="Categoria no encontrada",content=@Content)
+public ResponseEntity<?> buscarPorId(@PathVariable Integer id) {
+    try {
+        if (id<=0) {
+            Link link = linkTo(methodOn(CategoriaController.class)
+                .buscarPorId(id))
+                .withRel("reintentar");
+            EntityModel<?> error = EntityModel.of(
+                Map.of("mensaje", "Hubo un error en la id buscada no puede ser menor a 1"), link
+            );
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        }
+        CategoriaDTO categoria = categoriaService.obtenerPorID(id);
+        return ResponseEntity.ok(assembler.toModel(categoria));
+    } catch (RuntimeException e) {
         Link linkVer = linkTo(methodOn(CategoriaController.class)
             .getAll())
             .withRel("ver-ids-disponibles");
@@ -87,9 +90,9 @@ public class CategoriaController {
             Map.of("mensaje", "Categoria no encontrada, puedes ver las disponibles o crear una nueva"),
             linkVer, linkCrear
         );
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(noEncontrado);
-        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(noEncontrado);
     }
+}
 
     @GetMapping("/categorias-true")
     @Operation(summary="Obtener categorias true",description="obtiene una lista con todas las categorias las cuales esten *Activas*")
@@ -133,7 +136,7 @@ public class CategoriaController {
     @PostMapping
     @Operation(summary="Crear una nueva categoria")
     @ApiResponse(responseCode="201",description="Categoria creada :D")
-    public ResponseEntity<CategoriaDTO> guardarCategoria(@RequestBody CategoriaDTO dto) {
+    public ResponseEntity<?> guardarCategoria(@RequestBody CategoriaDTO dto) {
         CategoriaDTO guardada = categoriaService.guardarCategoriaDTO(dto);
         return new ResponseEntity<>(guardada, HttpStatus.CREATED);
     }

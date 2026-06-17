@@ -1,27 +1,31 @@
 package com.Ev3FS.categorias.assemblers;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.stereotype.Component;
 
+import com.Ev3FS.categorias.DTO.CategoriaDTO;
 import com.Ev3FS.categorias.controller.CategoriaController;
-import com.Ev3FS.categorias.model.Categoria;
 
 @Component
-public class CategoriaModelAssembler implements RepresentationModelAssembler<Categoria, EntityModel<Categoria>> {
+public class CategoriaModelAssembler implements RepresentationModelAssembler<CategoriaDTO, EntityModel<CategoriaDTO>> {
     @Override
-    public EntityModel<Categoria> toModel(Categoria categoria) {
-        return EntityModel.of(categoria, // Envuelve Categoria y le agrega links de navegacion
-            linkTo(                                          // Construye la URL
-                methodOn(CategoriaController.class)          // Apunta al controller
-                .buscarPorId(categoria.getIdCategoria()))    // Simula llamar buscarPorId con el id
-            .withSelfRel(),                                  // Link "self" = URL de esta categoria (/api/v1/categoria/1)
-            linkTo(                                          // Construye la URL
-                methodOn(CategoriaController.class)          // Apunta al controller
-                .getAll())                                   // Simula llamar getAll
-            .withRel("categorias")                           // Link "categorias" = URL de la lista (/api/v1/categoria)
+    public EntityModel<CategoriaDTO> toModel(CategoriaDTO categoria) {
+        return EntityModel.of(categoria,
+            linkTo(methodOn(CategoriaController.class)
+                .buscarPorId(categoria.getIdCategoria()))
+            .withSelfRel(),
+            linkTo(methodOn(CategoriaController.class)
+                .getAll())
+            .withRel("categorias"),
+            linkTo(methodOn(CategoriaController.class)
+                .guardarCategoria(null))
+            .withRel("agregar-categoria"),
+            linkTo(methodOn(CategoriaController.class)
+                .actualizarCategoria(categoria.getIdCategoria(), null))
+            .withRel("actualizar-categoria")
         );
     }
 }
