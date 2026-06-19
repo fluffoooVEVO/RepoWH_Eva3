@@ -1,0 +1,6 @@
+CREATE TABLE categoria (
+    id_categoria INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    descripcion VARCHAR(200) NOT NULL,
+    status BOOLEAN NOT NULL DEFAULT TRUE
+);
