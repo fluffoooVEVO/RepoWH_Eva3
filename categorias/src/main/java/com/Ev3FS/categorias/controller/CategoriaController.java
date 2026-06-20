@@ -51,10 +51,13 @@ public class CategoriaController {
     public ResponseEntity<?> getAll() {
         List<CategoriaDTO> categorias = categoriaService.obtenerTodasDTO();
         if (categorias.isEmpty()) {
+            CategoriaDTO aux = new CategoriaDTO();
+            aux.setIdCategoria(0);
+            aux.setNombre("Debe agregar una categoria");
             EntityModel<?>vacio=EntityModel.of(
                 Map.of("mensaje", "No hay categorias"), // mensaje cuando la lista esta vacia
                 linkTo(methodOn(CategoriaController.class)
-                    .guardarCategoria(null)) // apunta al metodo guardar
+                    .guardarCategoria(aux)) // apunta al metodo guardar
                     .withRel("crear-categoria") // le pone el nombre al link
             );
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(vacio); // devuelve 204 con el link

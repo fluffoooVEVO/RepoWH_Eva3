@@ -1,5 +1,5 @@
 server:
-  port: '8081'
+  port: '8082'
 
 springdoc:
   api-docs:
@@ -9,7 +9,7 @@ springdoc:
 
 spring:
   application:
-    name: categorias
+    name: enlaces
   flyway:
     enabled: 'true'
     baseline-on-migrate: 'true'
@@ -27,7 +27,7 @@ spring:
       on-profile: dev
   datasource:
     username: root
-    url: jdbc:mysql://localhost:3306/db_categorias_dev?createDatabaseIfNotExist=true
+    url: jdbc:mysql://localhost:3306/db_enlaces_dev?createDatabaseIfNotExist=true
     driverClassName: com.mysql.cj.jdbc.Driver
     password: ''
   jpa:
@@ -42,7 +42,7 @@ spring:
       on-profile: test
   datasource:
     username: root
-    url: jdbc:mysql://localhost:3306/db_categorias_test?createDatabaseIfNotExist=true
+    url: jdbc:mysql://localhost:3306/db_enlaces_test?createDatabaseIfNotExist=true
     driverClassName: com.mysql.cj.jdbc.Driver
     password: ''
   jpa:
@@ -57,7 +57,7 @@ spring:
       on-profile: prod
   datasource:
     username: root
-    url: jdbc:mysql://localhost:3306/db_categorias_prod?createDatabaseIfNotExist=true
+    url: jdbc:mysql://localhost:3306/db_enlaces_prod?createDatabaseIfNotExist=true
     driverClassName: com.mysql.cj.jdbc.Driver
     password: ''
   jpa:
