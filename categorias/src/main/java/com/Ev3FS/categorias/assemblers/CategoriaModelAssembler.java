@@ -22,10 +22,7 @@ public class CategoriaModelAssembler implements RepresentationModelAssembler<Cat
             .withRel("categorias"),
             linkTo(methodOn(CategoriaController.class)
                 .guardarCategoria(categoria))
-            .withRel("agregar-categoria"),
-            linkTo(methodOn(CategoriaController.class)
-                .actualizarCategoria(categoria.getIdCategoria(), null))
-            .withRel("actualizar-categoria")
+            .withRel("agregar-categoria")
         );
     }
 }

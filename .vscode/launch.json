@@ -3,6 +3,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "EnlacesApplication",
+            "request": "launch",
+            "mainClass": "com.Ev3FS.enlaces.EnlacesApplication",
+            "projectName": "enlaces"
+        },
+        {
+            "type": "java",
             "name": "Spring Boot",
             "request": "launch",
             "mainClass": "com.Ev3FS.categorias.CategoriasApplication",

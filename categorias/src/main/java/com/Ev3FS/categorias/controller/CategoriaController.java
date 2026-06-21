@@ -1,13 +1,13 @@
 package com.Ev3FS.categorias.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,26 +45,37 @@ public class CategoriaController {
     @Autowired
     private CategoriaModelAssembler assembler;
 
-    @GetMapping
-    @Operation(summary="Obtener todas las categorias",description="Muestra todas las categorias existentes")
-    @ApiResponse(responseCode="204",description="La lista esta vacia")
-    public ResponseEntity<?> getAll() {
-        List<CategoriaDTO> categorias = categoriaService.obtenerTodasDTO();
-        if (categorias.isEmpty()) {
-            CategoriaDTO aux = new CategoriaDTO();
-            aux.setIdCategoria(0);
-            aux.setNombre("Debe agregar una categoria");
-            EntityModel<?>vacio=EntityModel.of(
-                Map.of("mensaje", "No hay categorias"), // mensaje cuando la lista esta vacia
-                linkTo(methodOn(CategoriaController.class)
-                    .guardarCategoria(aux)) // apunta al metodo guardar
-                    .withRel("crear-categoria") // le pone el nombre al link
-            );
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(vacio); // devuelve 204 con el link
-        }
-        return new ResponseEntity<>(categorias, HttpStatus.OK); // devuelve la lista normal
+@GetMapping
+@Operation(summary="Obtener todas las categorias",description="Muestra todas las categorias existentes")
+@ApiResponse(responseCode="204",description="La lista esta vacia")
+public ResponseEntity<?> getAll() {
+    // Trae todas las categorias desde la base de datos via el service
+    List<CategoriaDTO> categorias = categoriaService.obtenerTodasDTO();
+    // Link HATEOAS que apunta directo a la sección "guardarCategoria" en Swagger
+    // (no ejecuta el POST, solo navega a la documentacion de ese endpoint)
+    Link linkCrear = Link.of("http://localhost:8081/doc/swagger-ui/index.html#/Categoria/guardarCategoria")
+        .withRel("crear-categoria"); // "crear-categoria" es el nombre/etiqueta del link en el JSON
+    if (categorias.isEmpty()) {
+        // Caso: no hay categorias. Devolvemos un mensaje + el link para crear una
+        EntityModel<?> vacio = EntityModel.of(
+            Map.of("mensaje", "No hay categorias"),
+            linkCrear
+        );
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(vacio); // 204
     }
-
+    // Segundo link, igual al primero pero apuntando a buscarPorId
+    Link linkVerUna = Link.of("http://localhost:8081/doc/swagger-ui/index.html#/Categoria/buscarPorId")
+        .withRel("ver-una-categoria");
+    // Caso: hay categorias. Empaquetamos la lista + mensaje + ambos links
+    EntityModel<?> conDatos = EntityModel.of(
+        Map.of(
+            "categorias", categorias,
+            "mensaje", "Puedes crear una nueva categoria o ver una en especifico"
+        ),
+        linkCrear, linkVerUna
+    );
+    return new ResponseEntity<>(conDatos, HttpStatus.OK); // 200
+}
 @GetMapping("/{id}")
 @Operation(summary = "Obtener una categoria", description = "Obtiene una categoria con el parametro *id*")
 @ApiResponse(responseCode="400",description="Hubo un error *Tipeo quizas*?",content=@Content)
@@ -72,26 +83,22 @@ public class CategoriaController {
 public ResponseEntity<?> buscarPorId(@PathVariable Integer id) {
     try {
         if (id<=0) {
-            Link link = linkTo(methodOn(CategoriaController.class)
-                .buscarPorId(id))
+            Link link = Link.of("http://localhost:8081/doc/swagger-ui/index.html#/Categoria/buscarPorId")
                 .withRel("reintentar");
-            EntityModel<?> error = EntityModel.of(
-                Map.of("mensaje", "Hubo un error en la id buscada no puede ser menor a 1"), link
-            );
+                EntityModel<?> error=EntityModel.of(
+                    Map.of("mensaje","Hubo un error a la hora de colocar el id a buscar"),
+                    link
+                );
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
-        CategoriaDTO categoria = categoriaService.obtenerPorID(id);
-        return ResponseEntity.ok(assembler.toModel(categoria));
+    CategoriaDTO categoria = categoriaService.obtenerPorID(id);
+    return ResponseEntity.ok(categoria);
     } catch (RuntimeException e) {
-        Link linkVer = linkTo(methodOn(CategoriaController.class)
-            .getAll())
-            .withRel("ver-ids-disponibles");
-        Link linkCrear = linkTo(methodOn(CategoriaController.class)
-            .guardarCategoria(null))
-            .withRel("crear-categoria");
-        EntityModel<?> noEncontrado = EntityModel.of(
-            Map.of("mensaje", "Categoria no encontrada, puedes ver las disponibles o crear una nueva"),
-            linkVer, linkCrear
+        Link linkCrear = Link.of("http://localhost:8081/doc/swagger-ui/index.html#/Categoria/guardarCategoria")
+        .withRel("crear-categoria");
+        EntityModel<?>noEncontrado=EntityModel.of(
+            Map.of("mensaje", "Categoria no encontrada,quizas quieras Crear una con el href."),
+            linkCrear
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(noEncontrado);
     }
@@ -137,11 +144,14 @@ public ResponseEntity<?> buscarPorId(@PathVariable Integer id) {
     }
 
     @PostMapping
-    @Operation(summary="Crear una nueva categoria")
-    @ApiResponse(responseCode="201",description="Categoria creada :D")
+    @Operation(summary = "Crear una nueva categoria")
+    @ApiResponse(responseCode = "201", description = "Categoria creada :D")
     public ResponseEntity<?> guardarCategoria(@RequestBody CategoriaDTO dto) {
         CategoriaDTO guardada = categoriaService.guardarCategoriaDTO(dto);
-        return new ResponseEntity<>(guardada, HttpStatus.CREATED);
+        Link linkEditar = Link.of("http://localhost:8082/doc/swagger-ui/index.html#/Categoria/actualizarCategoria")
+                .withRel("Por si te has equivocado en algun dato, puedes editarlo con este link");
+        EntityModel<CategoriaDTO> posibleEdicion = EntityModel.of(guardada, linkEditar);
+        return new ResponseEntity<>(posibleEdicion, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
@@ -161,13 +171,16 @@ public ResponseEntity<?> buscarPorId(@PathVariable Integer id) {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary="Borrar datos",description="Elimina una categoria de la lista")
-    @ApiResponse(responseCode="404",description="No se encontro la categoria a eliminar",content=@Content)
-    @ApiResponse(responseCode="400",description="El id que escribio puede que sea erroneo",content=@Content)
-    public ResponseEntity<String> eliminarCategoria(@PathVariable Integer id) {
+    @Operation(summary = "Borrar datos", description = "Elimina una categoria de la lista")
+    @ApiResponse(responseCode = "404", description = "No se encontro la categoria a eliminar", content = @Content)
+    @ApiResponse(responseCode = "400", description = "El id que escribio puede que sea erroneo", content = @Content)
+    public ResponseEntity<?> eliminarCategoria(@PathVariable Integer id) {
         try {
             String mensaje = categoriaService.eliminarCategoriaDTO(id);
-            return new ResponseEntity<>(mensaje, HttpStatus.OK);
+            Link linkListar = Link.of("http://localhost:8082/doc/swagger-ui/index.html#/Categoria/listarCategorias")
+                    .withRel("Ver todas las categorias");
+            EntityModel<String> respuesta = EntityModel.of(mensaje, linkListar);
+            return new ResponseEntity<>(respuesta, HttpStatus.OK);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }

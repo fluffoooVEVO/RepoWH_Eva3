@@ -1,4 +1,4 @@
-package Exception;
+package com.MainProducto.Exception;
 
 import java.util.HashMap;
 import java.util.List;
