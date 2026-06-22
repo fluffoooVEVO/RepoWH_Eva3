@@ -2,7 +2,6 @@ package com.Ev3FS.categorias.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.Ev3FS.categorias.DTO.ImagenDTO;
@@ -15,8 +14,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ImagenService {
 
-    @Autowired
-    private ImagenRepository imagenRepository;
+    private final ImagenRepository imagenRepository;
+
+    ImagenService(ImagenRepository imagenRepository) {
+        this.imagenRepository = imagenRepository;
+    }
 
     public Imagen convertirAEntidad(ImagenDTO dto) {
         Imagen imagen = new Imagen();

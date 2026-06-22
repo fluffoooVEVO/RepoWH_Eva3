@@ -2,7 +2,6 @@ package com.Ev3FS.categorias.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.Ev3FS.categorias.DTO.CategoriasDTO;
@@ -16,10 +15,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class CategoriasService {
-    @Autowired
-    CategoriaRepository categoriaRepository;
-    @Autowired
-    CategoriasRepository categoriasRepository;
+    final CategoriaRepository categoriaRepository;
+    final CategoriasRepository categoriasRepository;
+
+    CategoriasService(CategoriaRepository categoriaRepository, CategoriasRepository categoriasRepository) {
+        this.categoriaRepository = categoriaRepository;
+        this.categoriasRepository = categoriasRepository;
+    }
     public CategoriasDTO convertirADTO(Categorias categoria){
         CategoriasDTO dto = new CategoriasDTO();
         dto.setId_categorias_producto(categoria.getIdProductoCategoria());

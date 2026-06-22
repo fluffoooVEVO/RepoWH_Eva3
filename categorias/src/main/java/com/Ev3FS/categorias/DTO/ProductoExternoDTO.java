@@ -1,4 +1,4 @@
-package dto;
+package com.Ev3FS.categorias.DTO;
 
 import java.time.LocalDate;
 
