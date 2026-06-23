@@ -40,7 +40,7 @@ public class CategoriasService {
         return categoria;
     }
 
-    public List<CategoriasDTO> obtenerTodasDTO() {
+    public List<CategoriasDTO> obtenerTodas() {
         return categoriasRepository.findAll().stream()
             .map(this::convertirADTO)
             .toList();
@@ -57,7 +57,7 @@ public class CategoriasService {
         return convertirADTO(categoria);
     }
 
-    public CategoriasDTO guardarCategoriasDTO(CategoriasDTO dto) {
+    public CategoriasDTO guardarCategorias(CategoriasDTO dto) {
         log.info("Recibiendo DTO para guardar");
         Categorias entidadParaGuardar = convertirAEntidad(dto);
         Categorias guardada = categoriasRepository.save(entidadParaGuardar);
@@ -65,7 +65,7 @@ public class CategoriasService {
         return convertirADTO(guardada);
     }
 
-    public CategoriasDTO actualizarCategoriasDTO(Integer id, CategoriasDTO dto) {
+    public CategoriasDTO actualizarCategorias(Integer id, CategoriasDTO dto) {
         log.info("Iniciando actualización de ID: {}", id);
         Categorias existente = categoriasRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("No se puede actualizar. ID " + id + " no encontrado."));
@@ -83,7 +83,7 @@ public class CategoriasService {
         return convertirADTO(actualizada);
     }
 
-    public String eliminarCategoriasDTO(Integer id) {
+    public String eliminarCategorias(Integer id) {
         log.info("Intentando eliminar físicamente la categoría con ID: {}", id);
         Categorias categoria = categoriasRepository.findById(id)
             .orElseThrow(() -> {
@@ -96,8 +96,5 @@ public class CategoriasService {
         return info + " ha sido eliminada exitosamente";
     }
 
-    public CategoriasDTO obtenerPorIdDTO(Long id) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
 }

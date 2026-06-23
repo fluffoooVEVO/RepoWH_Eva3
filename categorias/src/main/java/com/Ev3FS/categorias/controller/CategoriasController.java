@@ -1,13 +1,11 @@
 package com.Ev3FS.categorias.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.Ev3FS.categorias.DTO.CategoriasDTO;
-import com.Ev3FS.categorias.assemblers.CategoriasModelAssembler;
 import com.Ev3FS.categorias.service.CategoriasService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,38 +33,67 @@ import io.swagger.v3.oas.annotations.tags.Tag;
     @ApiResponse(responseCode="500",description="Error de servidor"),
     @ApiResponse(responseCode="200",description="Operacion exitosa")
 })
-public class CategoriasController{
+public class CategoriasController {
 
     @Autowired
     private CategoriasService categoriasService;
-
-    @Autowired
-    private CategoriasModelAssembler assembler;
 
     @GetMapping
     @Operation(summary="Obtener todas las relaciones Producto-Categoria", 
     description="Obtiene todas las relaciones existentes entre productos y categorias, incluyendo su id propia, id de producto e id de categoria")
     @ApiResponse(responseCode="204",description="La lista esta vacia")
-    public ResponseEntity<CollectionModel<EntityModel<CategoriasDTO>>> getAll() {
-        List<CategoriasDTO> categorias = categoriasService.obtenerTodasDTO();
+    public ResponseEntity<?> getAll() {
+        List<CategoriasDTO> categorias = categoriasService.obtenerTodas();
+
+        Link linkCrear = Link.of("http://localhost:8081/doc/swagger-ui/index.html#/Categorias/crearCategorias")
+            .withRel("crear-relacion");
+
         if (categorias.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            EntityModel<?> vacio = EntityModel.of(
+                Map.of("mensaje", "No hay relaciones producto-categoria"),
+                linkCrear
+            );
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(vacio);
         }
-        CollectionModel<EntityModel<CategoriasDTO>> coleccion = assembler.toCollectionModel(categorias);
-        coleccion.add(linkTo(methodOn(CategoriasController.class).getAll()).withSelfRel());
-        return new ResponseEntity<>(coleccion, HttpStatus.OK);
+
+        Link linkVerUna = Link.of("http://localhost:8081/doc/swagger-ui/index.html#/Categorias/obtenerPorID")
+            .withRel("ver-una-relacion");
+
+        EntityModel<?> conDatos = EntityModel.of(
+            Map.of(
+                "relaciones", categorias,
+                "mensaje", "Puedes crear una nueva relacion o ver una en especifico"
+            ),
+            linkCrear, linkVerUna
+        );
+        return new ResponseEntity<>(conDatos, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Obtener ", description = "Obtiene el conjunto de categoria-producto basado con  *id*")
+    @Operation(summary = "Obtener ", description = "Obtiene el conjunto de categoria-producto basado con id")
     @ApiResponse(responseCode="400",description="Hubo un error de tipeo?",content=@Content)
     @ApiResponse(responseCode="404",description="Conjunto de categoria no encontrada",content=@Content)
-    public ResponseEntity<EntityModel<CategoriasDTO>> obtenerPorID(@PathVariable Integer id){
+    public ResponseEntity<?> obtenerPorID(@PathVariable Integer id) {
         try {
+            if (id <= 0) {
+                Link link = Link.of("http://localhost:8081/doc/swagger-ui/index.html#/Categorias/obtenerPorID")
+                    .withRel("reintentar");
+                EntityModel<?> error = EntityModel.of(
+                    Map.of("mensaje", "Hubo un error a la hora de colocar el id a buscar"),
+                    link
+                );
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+            }
             CategoriasDTO categoria = categoriasService.obtenerPorID(id);
-            return new ResponseEntity<>(assembler.toModel(categoria), HttpStatus.OK);
+            return ResponseEntity.ok(categoria);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            Link linkCrear = Link.of("http://localhost:8081/doc/swagger-ui/index.html#/Categorias/crearCategorias")
+                .withRel("crear-relacion");
+            EntityModel<?> noEncontrado = EntityModel.of(
+                Map.of("mensaje", "Relacion no encontrada, quizas quieras crear una con el href."),
+                linkCrear
+            );
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(noEncontrado);
         }
     }
 
@@ -75,10 +101,13 @@ public class CategoriasController{
     @Operation(summary = "Crear una nueva relacion Producto-Categoria", description = "Crea una nueva relacion entre un producto y una categoria")
     @ApiResponse(responseCode = "201", description = "Relacion creada correctamente", content = @Content)
     @ApiResponse(responseCode = "400", description = "Hubo un error al crear la relacion", content = @Content)
-    public ResponseEntity<EntityModel<CategoriasDTO>> crearCategorias(@RequestBody CategoriasDTO categoriasDTO) {
+    public ResponseEntity<?> crearCategorias(@RequestBody CategoriasDTO categoriasDTO) {
         try {
-            CategoriasDTO nuevaCategoria = categoriasService.guardarCategoriasDTO(categoriasDTO);
-            return new ResponseEntity<>(assembler.toModel(nuevaCategoria), HttpStatus.CREATED);
+            CategoriasDTO nuevaCategoria = categoriasService.guardarCategorias(categoriasDTO);
+            Link linkEditar = Link.of("http://localhost:8081/doc/swagger-ui/index.html#/Categorias/actualizarCategorias")
+                .withRel("Por si te has equivocado en algun dato, puedes editarlo con este link");
+            EntityModel<CategoriasDTO> posibleEdicion = EntityModel.of(nuevaCategoria, linkEditar);
+            return new ResponseEntity<>(posibleEdicion, HttpStatus.CREATED);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -93,7 +122,7 @@ public class CategoriasController{
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         try {
-            CategoriasDTO categoriaActualizada = categoriasService.actualizarCategoriasDTO(id, categoriasDTO);
+            CategoriasDTO categoriaActualizada = categoriasService.actualizarCategorias(id, categoriasDTO);
             return new ResponseEntity<>(categoriaActualizada, HttpStatus.OK);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -104,17 +133,16 @@ public class CategoriasController{
     @Operation(summary = "Eliminar una relacion Producto-Categoria", description = "Elimina una relacion existente entre producto y categoria")
     @ApiResponse(responseCode = "400", description = "El id ingresado es invalido", content = @Content)
     @ApiResponse(responseCode = "404", description = "No se encontro la relacion a eliminar", content = @Content)
-    public ResponseEntity<String> eliminarCategorias(@PathVariable Integer id) {
+    public ResponseEntity<?> eliminarCategorias(@PathVariable Integer id) {
         if (id <= 0) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         try {
-            String mensaje = categoriasService.eliminarCategoriasDTO(id);
-
-            Link linkListar = linkTo(methodOn(CategoriasController.class).getAll()).withRel("verTodasLasRelaciones");
+            String mensaje = categoriasService.eliminarCategorias(id);
+            Link linkListar = Link.of("http://localhost:8081/doc/swagger-ui/index.html#/Categorias/getAll")
+                .withRel("Ver todas las relaciones");
             EntityModel<String> respuesta = EntityModel.of(mensaje, linkListar);
-
-            return new ResponseEntity<>(mensaje, HttpStatus.OK);
+            return new ResponseEntity<>(respuesta, HttpStatus.OK);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
