@@ -16,7 +16,7 @@ spring:
   jpa:
     show-sql: 'true'
   profiles:
-    active: dev 
+    active: dev
 
 producto:
   service:
