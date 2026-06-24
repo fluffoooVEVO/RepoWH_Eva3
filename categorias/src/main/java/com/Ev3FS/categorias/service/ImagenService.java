@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.Ev3FS.categorias.Client.ProductoClient;
 import com.Ev3FS.categorias.DTO.ImagenDTO;
 import com.Ev3FS.categorias.model.Imagen;
 import com.Ev3FS.categorias.repository.ImagenRepository;
@@ -15,9 +16,11 @@ import lombok.extern.slf4j.Slf4j;
 public class ImagenService {
 
     private final ImagenRepository imagenRepository;
+    private final ProductoClient productoClient;
 
-    ImagenService(ImagenRepository imagenRepository) {
+    ImagenService(ImagenRepository imagenRepository, ProductoClient productoClient) {
         this.imagenRepository = imagenRepository;
+        this.productoClient = productoClient;
     }
 
     public Imagen convertirAEntidad(ImagenDTO dto) {
@@ -26,6 +29,7 @@ public class ImagenService {
         imagen.setUrl(dto.getUrl());
         imagen.setOrden(dto.getOrden());
         imagen.setDescripcion(dto.getDescripcion());
+        imagen.setIdProducto(dto.getIdProducto());
         return imagen;
     }
 
@@ -35,6 +39,7 @@ public class ImagenService {
         dto.setUrl(imagen.getUrl());
         dto.setOrden(imagen.getOrden());
         dto.setDescripcion(imagen.getDescripcion());
+        dto.setIdProducto(imagen.getIdProducto());
         return dto;
     }
 
@@ -62,6 +67,12 @@ public class ImagenService {
     }
 
     public ImagenDTO guardarImagenDTO(ImagenDTO dto) {
+        log.info("Validando existencia del producto con ID: {}", dto.getIdProducto());
+        if (!productoClient.existeProducto(dto.getIdProducto())) {
+            log.error("No existe un producto con ID: {}", dto.getIdProducto());
+            throw new RuntimeException("No existe un producto con ID: " + dto.getIdProducto());
+        }
+
         log.info("Guardando nueva imagen");
 
         Imagen imagen = convertirAEntidad(dto);
@@ -86,6 +97,7 @@ public class ImagenService {
         log.info("Imagen actualizada exitosamente con ID: {}", id);
         return convertirADTO(imagenActualizada);
     }
+
     public String deleteImagen(Integer id) {
         log.info("Eliminando imagen con ID: {}", id);
         Imagen imagen = imagenRepository.findById(id)

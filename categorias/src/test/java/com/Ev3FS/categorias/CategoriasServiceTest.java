@@ -1,4 +1,4 @@
-package com.Ev3FS.categorias.service;
+package com.Ev3FS.categorias;
 
 import java.util.Optional;
 
@@ -21,6 +21,7 @@ import com.Ev3FS.categorias.model.Categoria;
 import com.Ev3FS.categorias.model.Categorias;
 import com.Ev3FS.categorias.repository.CategoriaRepository;
 import com.Ev3FS.categorias.repository.CategoriasRepository;
+import com.Ev3FS.categorias.service.CategoriasService;
 
 @ExtendWith(MockitoExtension.class)
 class CategoriasServiceTest {
