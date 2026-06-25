@@ -1,0 +1,66 @@
+server:
+  port: '8082'
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /doc/swagger-ui/index.html
+
+# URL del microservicio de Edicion (comunicacion via WebClient)
+ms:
+  edicion:
+    url: http://localhost:8081
+
+spring:
+  application:
+    name: ms-figura
+  jpa:
+    show-sql: 'true'
+  profiles:
+    active: dev
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    username: root
+    url: jdbc:mysql://localhost:3306/db_figura_dev?createDatabaseIfNotExist=true
+    driverClassName: com.mysql.cj.jdbc.Driver
+    password: ''
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    username: root
+    url: jdbc:mysql://localhost:3306/db_figura_test?createDatabaseIfNotExist=true
+    driverClassName: com.mysql.cj.jdbc.Driver
+    password: ''
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    username: root
+    url: jdbc:mysql://localhost:3306/db_figura_prod?createDatabaseIfNotExist=true
+    driverClassName: com.mysql.cj.jdbc.Driver
+    password: ''
+  jpa:
+    hibernate:
+      ddl-auto: none

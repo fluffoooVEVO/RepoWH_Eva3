@@ -1,0 +1,61 @@
+server:
+  port: '8081'
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /doc/swagger-ui/index.html
+
+spring:
+  application:
+    name: ms-edicion
+  jpa:
+    show-sql: 'true'
+  profiles:
+    active: dev
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    username: root
+    url: jdbc:mysql://localhost:3306/db_edicion_dev?createDatabaseIfNotExist=true
+    driverClassName: com.mysql.cj.jdbc.Driver
+    password: ''
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    username: root
+    url: jdbc:mysql://localhost:3306/db_edicion_test?createDatabaseIfNotExist=true
+    driverClassName: com.mysql.cj.jdbc.Driver
+    password: ''
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    username: root
+    url: jdbc:mysql://localhost:3306/db_edicion_prod?createDatabaseIfNotExist=true
+    driverClassName: com.mysql.cj.jdbc.Driver
+    password: ''
+  jpa:
+    hibernate:
+      ddl-auto: none
