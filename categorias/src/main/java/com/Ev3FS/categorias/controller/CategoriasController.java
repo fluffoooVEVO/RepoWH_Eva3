@@ -84,7 +84,7 @@ public class CategoriasController {
                 );
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
             }
-            CategoriasDTO categoria = categoriasService.obtenerPorID(id);
+            CategoriasDTO categoria = categoriasService.buscarPorId(id);
             return ResponseEntity.ok(categoria);
         } catch (RuntimeException e) {
             Link linkCrear = Link.of("http://localhost:8081/doc/swagger-ui/index.html#/Categorias/crearCategorias")
