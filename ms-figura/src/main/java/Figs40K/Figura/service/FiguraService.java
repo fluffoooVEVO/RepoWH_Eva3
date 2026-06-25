@@ -155,4 +155,5 @@ public class FiguraService {
         dto.setEdicion(edicion);
         return dto;
     }
+ 
 }

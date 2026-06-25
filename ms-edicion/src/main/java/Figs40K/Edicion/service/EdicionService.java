@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import Figs40K.Edicion.DTO.EdicionDTO;
 import Figs40K.Edicion.model.Edicion;
 import Figs40K.Edicion.repository.EdicionRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -79,5 +80,20 @@ public class EdicionService {
         Edicion updated = edicionRepository.save(edi);
         log.info("Edición actualizada correctamente con ID= ", id_Edicion);
         return updated;
+    }
+
+    public EdicionDTO convertirADTO(Edicion edicion){
+        EdicionDTO dto = new EdicionDTO();
+        dto.setId_edicion(edicion.getId_edicion());
+        dto.setNombre(edicion.getNombre());
+        dto.setDescripcion(edicion.getDescripcion());
+        dto.setStatus(edicion.getStatus());
+        return dto;
+    }
+
+    public List<EdicionDTO> convertirListaADTO(List<Edicion> ediciones){
+        return ediciones.stream()
+            .map(this::convertirADTO)
+            .toList();
     }
 }

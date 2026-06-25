@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import Figs40K.Edicion.DTO.EdicionDTO;
+import Figs40K.Edicion.assemblers.EdicionModelAssembler;
 import Figs40K.Edicion.model.Edicion;
 import Figs40K.Edicion.service.EdicionService;
 
@@ -23,15 +25,24 @@ public class EdicionController {
     @Autowired
     private EdicionService edicionService;
 
+    @Autowired
+    private EdicionModelAssembler edicionAssembler;
+
     @GetMapping
-    public ResponseEntity<List<Edicion>> obtenerEdiciones(){
-        List<Edicion> ediciones=edicionService.obtenerTodos();
-        return ResponseEntity.ok(ediciones);
+    public ResponseEntity<List<EdicionDTO>> obtenerEdiciones(){
+        List<Edicion> ediciones = edicionService.obtenerTodos();
+        List<EdicionDTO> dtos = edicionService.convertirListaADTO(ediciones)
+            .stream()
+            .map(edicionAssembler::toModel)
+            .toList();
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Edicion> obtenerPorId(@PathVariable("id") Integer id_Edicion){
-        return ResponseEntity.ok(edicionService.obtenerPorId(id_Edicion));
+    public ResponseEntity<EdicionDTO> obtenerPorId(@PathVariable("id") Integer id_Edicion){
+        Edicion edicion = edicionService.obtenerPorId(id_Edicion);
+        EdicionDTO dto = edicionService.convertirADTO(edicion);
+        return ResponseEntity.ok(edicionAssembler.toModel(dto));
     }
 
     @PostMapping
