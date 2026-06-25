@@ -9,4 +9,5 @@ public class ImagenDTO {
     private Integer orden;
     private String descripcion;
     private Integer idProducto;
+    private ProductoExternoDTO producto;
 }

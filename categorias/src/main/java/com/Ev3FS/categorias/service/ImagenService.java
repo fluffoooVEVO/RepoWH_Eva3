@@ -2,10 +2,12 @@ package com.Ev3FS.categorias.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
-import com.Ev3FS.categorias.Client.ProductoClient;
 import com.Ev3FS.categorias.DTO.ImagenDTO;
+import com.Ev3FS.categorias.DTO.ProductoExternoDTO;
 import com.Ev3FS.categorias.model.Imagen;
 import com.Ev3FS.categorias.repository.ImagenRepository;
 
@@ -16,11 +18,27 @@ import lombok.extern.slf4j.Slf4j;
 public class ImagenService {
 
     private final ImagenRepository imagenRepository;
-    private final ProductoClient productoClient;
+    private final WebClient webClient;
 
-    ImagenService(ImagenRepository imagenRepository, ProductoClient productoClient) {
+    ImagenService(
+            ImagenRepository imagenRepository,
+            WebClient.Builder webClientBuilder,
+            @Value("${producto.service.url}") String productoServiceUrl) {
         this.imagenRepository = imagenRepository;
-        this.productoClient = productoClient;
+        this.webClient = webClientBuilder.baseUrl(productoServiceUrl).build();
+    }
+
+    public ProductoExternoDTO obtenerDatosDelProducto(Integer idProducto) {
+        try {
+            return webClient.get()
+                    .uri("/{id}", idProducto)
+                    .retrieve()
+                    .bodyToMono(ProductoExternoDTO.class)
+                    .block();
+        } catch (Exception e) {
+            log.error("Error al obtener el producto con ID {}: {}", idProducto, e.getMessage());
+            return null;
+        }
     }
 
     public Imagen convertirAEntidad(ImagenDTO dto) {
@@ -40,6 +58,12 @@ public class ImagenService {
         dto.setOrden(imagen.getOrden());
         dto.setDescripcion(imagen.getDescripcion());
         dto.setIdProducto(imagen.getIdProducto());
+        
+        if (imagen.getIdProducto() != null) {
+            ProductoExternoDTO producto = obtenerDatosDelProducto(imagen.getIdProducto());
+            dto.setProducto(producto);
+        }
+        
         return dto;
     }
 
@@ -68,7 +92,10 @@ public class ImagenService {
 
     public ImagenDTO guardarImagenDTO(ImagenDTO dto) {
         log.info("Validando existencia del producto con ID: {}", dto.getIdProducto());
-        if (!productoClient.existeProducto(dto.getIdProducto())) {
+        
+        // Validación utilizando WebClient en lugar de ProductoClient
+        ProductoExternoDTO productoExistente = obtenerDatosDelProducto(dto.getIdProducto());
+        if (productoExistente == null) {
             log.error("No existe un producto con ID: {}", dto.getIdProducto());
             throw new RuntimeException("No existe un producto con ID: " + dto.getIdProducto());
         }
@@ -90,9 +117,15 @@ public class ImagenService {
                     log.error("No se encontró la imagen con ID: {}", id);
                     return new RuntimeException("No se encontró la imagen con ID: " + id);
                 });
+                
         imagenExistente.setUrl(dto.getUrl());
         imagenExistente.setOrden(dto.getOrden());
         imagenExistente.setDescripcion(dto.getDescripcion());
+        
+        if (dto.getIdProducto() != null) {
+            imagenExistente.setIdProducto(dto.getIdProducto());
+        }
+        
         Imagen imagenActualizada = imagenRepository.save(imagenExistente);
         log.info("Imagen actualizada exitosamente con ID: {}", id);
         return convertirADTO(imagenActualizada);
