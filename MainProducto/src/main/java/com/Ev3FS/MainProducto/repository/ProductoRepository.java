@@ -1,9 +1,7 @@
-package repository;
+package com.Ev3FS.MainProducto.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import com.Ev3FS.MainProducto.model.Producto;
 
-import model.Producto;
-
-// interfaz de acceso a datos para la tabla producto
 public interface ProductoRepository extends JpaRepository<Producto, Integer> {
 }

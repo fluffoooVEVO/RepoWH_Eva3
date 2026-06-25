@@ -13,7 +13,9 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.hateoas.Link;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/marcas")
@@ -26,11 +28,37 @@ public class MarcaController {
     private MarcaModelAssembler assembler;
 
     @GetMapping
-    @Operation(summary="Obtener todas las marcas")
-    public ResponseEntity<?> listarMarcas() {
+    @Operation(
+        summary = "Obtener todas las marcas",
+        description = "Muestra todas las marcas existentes o un mensaje con opciones si está vacía."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Operación exitosa (lista llena o vacía con enlaces HATEOAS)")})
+    public ResponseEntity<EntityModel<?>> listarMarcas() {
         List<MarcaDTO> marcas = marcaService.obtenerTodas();
-        if(marcas.isEmpty()){ return ResponseEntity.noContent().build(); }
-        return ResponseEntity.ok(marcas.stream().map(assembler::toModel).toList());
+        Link linkCrear = Link.of("http://localhost:8082/doc/swagger-ui/index.html#/Marcas/crearMarca")
+                .withRel("crear-marca");
+                
+        if (marcas.isEmpty()) {
+            EntityModel<?> vacio = EntityModel.of(
+                Map.of("mensaje", "No hay marcas en este momento. Puedes crear una nueva."),
+                linkCrear
+            );
+            return ResponseEntity.status(HttpStatus.OK).body(vacio);
+        }
+        
+        Link linkVerUna = Link.of("http://localhost:8082/doc/swagger-ui/index.html#/Marcas/obtenerMarca")
+                .withRel("ver-una-marca");
+                
+        EntityModel<?> conDatos = EntityModel.of(
+            Map.of(
+                "marcas", marcas.stream().map(assembler::toModel).toList(),
+                "mensaje", "Puedes crear una nueva marca o ver una en especifico"
+            ),
+            linkCrear,
+            linkVerUna
+        );
+        return ResponseEntity.ok(conDatos);
     }
 
     @GetMapping("/{id}")

@@ -11,7 +11,12 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.hateoas.Link;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/relacion-enlaces")
@@ -24,11 +29,37 @@ public class EnlacesController {
     private EnlacesModelAssembler assembler;
 
     @GetMapping
-    @Operation(summary="Listar tabla intermedia")
-    public ResponseEntity<?> listarEnlaces() {
+    @Operation(
+        summary = "Listar tabla intermedia",
+        description = "Muestra todas las relaciones existentes o un mensaje con opciones si está vacía."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Operación exitosa (lista llena o vacía con enlaces HATEOAS)")})
+    public ResponseEntity<EntityModel<?>> listarEnlaces() {
         List<EnlacesDTO> relaciones = enlacesService.obtenerTodos();
-        if(relaciones.isEmpty()){ return ResponseEntity.noContent().build(); }
-        return ResponseEntity.ok(relaciones.stream().map(assembler::toModel).toList());
+        Link linkCrear = Link.of("http://localhost:8082/doc/swagger-ui/index.html#/Relaciones%20Enlaces/crearEnlace")
+                .withRel("crear-relacion");
+                
+        if (relaciones.isEmpty()) {
+            EntityModel<?> vacio = EntityModel.of(
+                Map.of("mensaje", "No hay relaciones en este momento. Puedes crear una nueva."),
+                linkCrear
+            );
+            return ResponseEntity.status(HttpStatus.OK).body(vacio);
+        }
+        
+        Link linkVerUna = Link.of("http://localhost:8082/doc/swagger-ui/index.html#/Relaciones%20Enlaces/obtenerEnlace")
+                .withRel("ver-una-relacion");
+                
+        EntityModel<?> conDatos = EntityModel.of(
+            Map.of(
+                "relaciones", relaciones.stream().map(assembler::toModel).toList(),
+                "mensaje", "Puedes crear una nueva relacion o ver una en especifico"
+            ),
+            linkCrear,
+            linkVerUna
+        );
+        return ResponseEntity.ok(conDatos);
     }
 
     @GetMapping("/{id}")

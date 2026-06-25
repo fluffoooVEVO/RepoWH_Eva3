@@ -1,4 +1,4 @@
-package config;
+package com.Ev3FS.MainProducto.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,8 +12,8 @@ public class SwaggerConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Figuritas API")
+                        .title("Figuritas API - MainProducto")
                         .version("1.0")
-                        .description("API para la gestión de figuritas"));
+                        .description("Microservicio central para el catálogo de productos y figuritas"));
     }
 }

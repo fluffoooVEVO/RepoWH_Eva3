@@ -11,7 +11,12 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.hateoas.Link;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/enlaces")
@@ -24,11 +29,37 @@ public class EnlaceController {
     private EnlaceModelAssembler assembler;
 
     @GetMapping
-    @Operation(summary="Listar todos los enlaces")
-    public ResponseEntity<?> listarEnlaces() {
+    @Operation(
+        summary = "Listar todos los enlaces",
+        description = "Muestra todos los enlaces existentes o un mensaje con opciones si está vacía."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Operación exitosa (lista llena o vacía con enlaces HATEOAS)")})
+    public ResponseEntity<EntityModel<?>> listarEnlaces() {
         List<EnlaceDTO> enlaces = enlaceService.obtenerTodos();
-        if(enlaces.isEmpty()){ return ResponseEntity.noContent().build(); }
-        return ResponseEntity.ok(enlaces.stream().map(assembler::toModel).toList());
+        Link linkCrear = Link.of("http://localhost:8082/doc/swagger-ui/index.html#/Enlaces/crearEnlace")
+                .withRel("crear-enlace");
+                
+        if (enlaces.isEmpty()) {
+            EntityModel<?> vacio = EntityModel.of(
+                Map.of("mensaje", "No hay enlaces en este momento. Puedes crear uno nuevo."),
+                linkCrear
+            );
+            return ResponseEntity.status(HttpStatus.OK).body(vacio);
+        }
+        
+        Link linkVerUna = Link.of("http://localhost:8082/doc/swagger-ui/index.html#/Enlaces/obtenerEnlace")
+                .withRel("ver-un-enlace");
+                
+        EntityModel<?> conDatos = EntityModel.of(
+            Map.of(
+                "enlaces", enlaces.stream().map(assembler::toModel).toList(),
+                "mensaje", "Puedes crear un nuevo enlace o ver uno en especifico"
+            ),
+            linkCrear,
+            linkVerUna
+        );
+        return ResponseEntity.ok(conDatos);
     }
 
     @GetMapping("/{id}")

@@ -8,4 +8,6 @@ public class ImagenDTO {
     private String url;
     private Integer orden;
     private String descripcion;
+    private Integer idProducto;
+    private ProductoExternoDTO producto;
 }

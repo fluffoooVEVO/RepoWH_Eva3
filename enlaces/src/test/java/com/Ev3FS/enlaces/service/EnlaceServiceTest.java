@@ -15,7 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.Ev3FS.enlaces.DTO.EnlaceDTO;
-import com.Ev3FS.enlaces.exception.ResourceNotFoundException;
+import com.Ev3FS.enlaces.Exception.ResourceNotFoundException;
 import com.Ev3FS.enlaces.model.Enlace;
 import com.Ev3FS.enlaces.repository.EnlaceRepository;
 

@@ -1,7 +1,7 @@
 package com.Ev3FS.enlaces.service;
 
 import com.Ev3FS.enlaces.DTO.EnlaceDTO;
-import com.Ev3FS.enlaces.exception.ResourceNotFoundException;
+import com.Ev3FS.enlaces.Exception.ResourceNotFoundException;
 import com.Ev3FS.enlaces.model.Enlace;
 import com.Ev3FS.enlaces.repository.EnlaceRepository;
 import lombok.extern.slf4j.Slf4j;

@@ -15,9 +15,12 @@ spring:
     baseline-on-migrate: 'true'
   jpa:
     show-sql: 'true'
-
   profiles:
-    active: dev 
+    active: dev
+
+producto:
+  service:
+    url: http://localhost:8080
 
 ---
 
@@ -42,24 +45,4 @@ spring:
       on-profile: test
   datasource:
     username: root
-    url: jdbc:mysql://localhost:3306/db_categorias_test?createDatabaseIfNotExist=true
-    driverClassName: com.mysql.cj.jdbc.Driver
-    password: ''
-  jpa:
-    hibernate:
-      ddl-auto: update
-
----
-
-spring:
-  config:
-    activate:
-      on-profile: prod
-  datasource:
-    username: root
-    url: jdbc:mysql://localhost:3306/db_categorias_prod?createDatabaseIfNotExist=true
-    driverClassName: com.mysql.cj.jdbc.Driver
-    password: ''
-  jpa:
-    hibernate:
-      ddl-auto: update
+    url: jdbc:mysql://localhost:3306/db_categorias_test?createDatabaseIfNotExist=t

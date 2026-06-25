@@ -1,4 +1,4 @@
-package model;
+package com.Ev3FS.MainProducto.model;
 
 import java.time.LocalDate;
 

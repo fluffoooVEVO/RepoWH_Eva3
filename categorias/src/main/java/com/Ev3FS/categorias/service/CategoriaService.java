@@ -4,7 +4,6 @@ package com.Ev3FS.categorias.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.Ev3FS.categorias.DTO.CategoriaDTO;
@@ -19,8 +18,11 @@ import lombok.extern.slf4j.Slf4j;
 
 public class CategoriaService {
 
-    @Autowired
-    CategoriaRepository categoriaRepository;
+    final CategoriaRepository categoriaRepository;
+
+    CategoriaService(CategoriaRepository categoriaRepository) {
+        this.categoriaRepository = categoriaRepository;
+    }
 
     public List<Categoria> ObtenerStatusTrue() {
         // 1- creamos un objeto para llamar al repo
