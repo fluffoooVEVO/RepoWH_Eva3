@@ -9,9 +9,21 @@ springdoc:
 
 spring:
   application:
+<<<<<<< HEAD
     name: MainProducto
   profiles:
     active: dev
+=======
+    name: main-producto
+  flyway:
+    enabled: 'true'
+    baseline-on-migrate: 'true'
+  jpa:
+    show-sql: 'true'
+
+  profiles:
+    active: dev 
+>>>>>>> branchDaniel
 
 ---
 
@@ -27,7 +39,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+<<<<<<< HEAD
     show-sql: 'true'
+=======
+>>>>>>> branchDaniel
 
 ---
 
@@ -42,6 +57,7 @@ spring:
     password: ''
   jpa:
     hibernate:
+<<<<<<< HEAD
       ddl-auto: update
 
 ---
@@ -57,4 +73,6 @@ spring:
     password: ''
   jpa:
     hibernate:
+=======
+>>>>>>> branchDaniel
       ddl-auto: update

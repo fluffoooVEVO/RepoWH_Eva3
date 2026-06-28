@@ -14,6 +14,8 @@ import com.Ev3FS.categorias.repository.ImagenRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
+
+
 @Slf4j
 @Service
 public class ImagenService {
@@ -124,10 +126,9 @@ public class ImagenService {
                     .uri("/api/v1/productos/{id}", idProducto)
                     .retrieve()
                     .bodyToMono(ProductoExternoDTO.class)
-                    .timeout(Duration.ofSeconds(5))
                     .block();
             
-            if (producto == null || producto.getId_producto() == null) {
+            if (producto == null ||producto.getId_producto()== null) {
                 log.error("El producto con ID {} no existe en el microservicio externo", idProducto);
                 throw new RuntimeException("El producto con ID " + idProducto + " no existe en el sistema central");
             }

@@ -1,6 +1,9 @@
 package com.Ev3FS.enlaces.Exception;
+<<<<<<< HEAD
 
 import java.util.Map;
+=======
+>>>>>>> branchDaniel
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

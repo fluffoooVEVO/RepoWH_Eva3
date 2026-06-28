@@ -4,10 +4,14 @@ import java.time.LocalDate;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 // objeto de transferencia para exponer los datos del producto de forma segura
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProductoDTO {
     private Integer id_producto;
 

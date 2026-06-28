@@ -1,0 +1,45 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: main-producto
+          uri: http://localhost:8080
+          predicates:
+            - Path=/producto/**
+          filters:
+            - StripPrefix=1
+        - id: categorias
+          uri: http://localhost:8081
+          predicates:
+            - Path=/categorias/**
+          filters:
+            - StripPrefix=1
+        - id: enlaces
+          uri: http://localhost:8082
+          predicates:
+            - Path=/enlaces/**
+          filters:
+            - StripPrefix=1
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /doc/swagger-ui/index.html
+    urls:
+      - name: Producto API
+        url: /producto/api-docs
+      - name: Categorias API
+        url: /categorias/api-docs
+      - name: Enlaces API
+        url: /enlaces/api-docs

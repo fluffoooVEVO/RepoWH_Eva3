@@ -16,7 +16,6 @@ import com.Ev3FS.categorias.repository.CategoriaRepository;
 import com.Ev3FS.categorias.repository.CategoriasRepository;
 
 import lombok.extern.slf4j.Slf4j;
-
 @Slf4j
 @Service
 public class CategoriasService {
@@ -102,7 +101,8 @@ public class CategoriasService {
         if (idProducto == null) {
             throw new RuntimeException("El ID del producto no puede ser nulo");
         }
-        log.info("Validando producto ID: {} en microservicio ", idProducto);
+        
+        log.info("Validando producto ID: {} en microservicio externo", idProducto);
         try {
             ProductoExternoDTO producto = productoWebClient
                     .get()
@@ -110,18 +110,21 @@ public class CategoriasService {
                     .retrieve()
                     .bodyToMono(ProductoExternoDTO.class)
                     .block();
-            if (producto == null || producto.getId_producto() == null) {
-                log.error("El producto con ID {} no existe en el microservicio externo", idProducto);
-                throw new RuntimeException("El producto con ID " + idProducto + " no existe en el sistema central");
-            }
-            
+                    if (producto == null ||producto.getId_producto()== null) {
+                        log.error("El producto con ID {} no existe en el microservicio externo", idProducto);
+                        throw new RuntimeException("El producto con ID " + idProducto + " no existe en el sistema central");
+                    }                   
             log.info("Producto ID: {} validado correctamente", idProducto);
             
-        } catch (WebClientResponseException.NotFound e) {
-            log.error("El producto con ID {} no existe en el microservicio externo", idProducto);
-            throw new RuntimeException("El producto con ID " + idProducto + " no existe en el sistema central");
+        } catch (WebClientResponseException e) {
+            if (e.getStatusCode().is4xxClientError()) {
+                log.error("Producto {} no encontrado o solicitud inválida", idProducto);
+                throw new RuntimeException("El producto con ID " + idProducto + " no existe en el sistema central");
+            }
+            log.error("Error en el microservicio de productos: {}", e.getMessage());
+            throw new RuntimeException("Error de conexion con el microservicio de productos");
         } catch (Exception e) {
-            log.error("Error al comunicarse con el microservicio de productos: {}", e.getMessage());
+            log.error("Error inesperado: {}", e.getMessage());
             throw new RuntimeException("Error de conexion con el microservicio de productos");
         }
     }
