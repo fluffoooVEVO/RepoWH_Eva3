@@ -8,7 +8,7 @@ spring:
     gateway:
       routes:
         - id: main-producto
-          uri: http://localhost:8080
+          uri: http://localhost:8087
           predicates:
             - Path=/producto/**
           filters:
@@ -30,6 +30,11 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+    hostname: localhost
 
 springdoc:
   api-docs:
@@ -38,8 +43,8 @@ springdoc:
     path: /doc/swagger-ui/index.html
     urls:
       - name: Producto API
-        url: /producto/api-docs
+        url: /api-docs 
       - name: Categorias API
-        url: /categorias/api-docs
+        url: /api-docs 
       - name: Enlaces API
-        url: /enlaces/api-docs
+        url: /api-docs 

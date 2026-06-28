@@ -1,30 +1,24 @@
 package com.Ev3FS.MainProducto.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.Ev3FS.MainProducto.DTO.ProductoDTO;
 import com.Ev3FS.MainProducto.exception.ResourceNotFoundException;
+import com.Ev3FS.MainProducto.model.Producto;
 import com.Ev3FS.MainProducto.repository.ProductoRepository;
-
-import model.Producto;
 
 @ExtendWith(MockitoExtension.class)
 class ProductoServiceTest {

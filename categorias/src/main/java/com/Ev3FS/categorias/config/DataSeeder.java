@@ -35,9 +35,7 @@ public class DataSeeder implements CommandLineRunner {
     @Override
     public void run(String... args) {
         log.info("Verificando datos existentes...");
-
         var categoriasExistentes = categoriaRepository.findAll();
-
         if (categoriasExistentes.isEmpty()) {
             log.info("No hay categorías, creando con Faker...");
             for (int i = 0; i < 5; i++) {

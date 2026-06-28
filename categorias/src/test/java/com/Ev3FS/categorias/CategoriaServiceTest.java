@@ -27,7 +27,7 @@ import com.Ev3FS.categorias.service.CategoriaService;
 //mvn test -Dtest=CategoriaServiceTest
 // COMMANDOS PARA HACER EL TEST
 @ExtendWith(MockitoExtension.class)
-class CategoriaServiceTest {
+public class CategoriaServiceTest {
 
     @Mock
     private CategoriaRepository categoriaRepository;
