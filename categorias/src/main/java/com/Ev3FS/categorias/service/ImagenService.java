@@ -1,6 +1,5 @@
 package com.Ev3FS.categorias.service;
 
-import java.time.Duration;
 import java.util.List;
 
 import org.springframework.stereotype.Service;

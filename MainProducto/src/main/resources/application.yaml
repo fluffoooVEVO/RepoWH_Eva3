@@ -9,11 +9,6 @@ springdoc:
 
 spring:
   application:
-<<<<<<< HEAD
-    name: MainProducto
-  profiles:
-    active: dev
-=======
     name: main-producto
   flyway:
     enabled: 'true'
@@ -23,7 +18,6 @@ spring:
 
   profiles:
     active: dev 
->>>>>>> branchDaniel
 
 ---
 
@@ -39,10 +33,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-<<<<<<< HEAD
-    show-sql: 'true'
-=======
->>>>>>> branchDaniel
 
 ---
 
@@ -57,22 +47,4 @@ spring:
     password: ''
   jpa:
     hibernate:
-<<<<<<< HEAD
-      ddl-auto: update
-
----
-
-spring:
-  config:
-    activate:
-      on-profile: prod
-  datasource:
-    username: root
-    url: jdbc:mysql://localhost:3306/db_producto_prod?createDatabaseIfNotExist=true
-    driverClassName: com.mysql.cj.jdbc.Driver
-    password: ''
-  jpa:
-    hibernate:
-=======
->>>>>>> branchDaniel
       ddl-auto: update

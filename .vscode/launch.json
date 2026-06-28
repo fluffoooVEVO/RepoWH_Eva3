@@ -3,6 +3,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "ApiGatewayApplication",
+            "request": "launch",
+            "mainClass": "com.Ev3FS.apigateway.ApiGatewayApplication",
+            "projectName": "api-gateway"
+        },
+        {
+            "type": "java",
+            "name": "EurekaServerApplication",
+            "request": "launch",
+            "mainClass": "com.Ev3FS.eurekaserver.EurekaServerApplication",
+            "projectName": "eureka-server"
+        },
+        {
+            "type": "java",
             "name": "EnlacesApplication",
             "request": "launch",
             "mainClass": "com.Ev3FS.enlaces.EnlacesApplication",

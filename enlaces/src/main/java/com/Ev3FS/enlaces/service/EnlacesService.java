@@ -1,18 +1,7 @@
 package com.Ev3FS.enlaces.service;
 
-<<<<<<< HEAD
 import java.util.List;
 
-=======
-import com.Ev3FS.enlaces.DTO.EnlacesDTO;
-import com.Ev3FS.enlaces.DTO.ProductoExternoDTO;
-import com.Ev3FS.enlaces.Exception.ResourceNotFoundException;
-import com.Ev3FS.enlaces.model.Enlace;
-import com.Ev3FS.enlaces.model.Enlaces;
-import com.Ev3FS.enlaces.repository.EnlaceRepository;
-import com.Ev3FS.enlaces.repository.EnlacesRepository;
-import lombok.extern.slf4j.Slf4j;
->>>>>>> branchDaniel
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;

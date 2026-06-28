@@ -24,10 +24,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.Ev3FS.enlaces.DTO.EnlacesDTO;
 import com.Ev3FS.enlaces.DTO.ProductoExternoDTO;
-<<<<<<< HEAD
-=======
-import com.Ev3FS.enlaces.Exception.ResourceNotFoundException;
->>>>>>> branchDaniel
 import com.Ev3FS.enlaces.model.Enlace;
 import com.Ev3FS.enlaces.model.Enlaces;
 import com.Ev3FS.enlaces.repository.EnlaceRepository;
@@ -63,18 +59,17 @@ class EnlacesServiceTest {
         enlacesDTO.setId_enlace(1);
         enlacesDTO.setId_producto(5);
     }
-
     @Test
     void obtenerTodos_DebeRetornarLista() {
         when(enlacesRepository.findAll()).thenReturn(Arrays.asList(enlaces));
-        List<EnlacesDTO> resultado = enlacesService.obtenerTodos();
+        List<EnlacesDTO> resultado = (List<EnlacesDTO>) enlacesService.obtenerTodos();
         assertFalse(resultado.isEmpty());
     }
 
     @Test
     void buscarPorId_CuandoExiste_DebeRetornarRelacion() {
         when(enlacesRepository.findById(1)).thenReturn(Optional.of(enlaces));
-        EnlacesDTO resultado = enlacesService.buscarPorId(1);
+        EnlacesDTO resultado = (EnlacesDTO) enlacesService.buscarPorId(1);
         assertEquals(5, resultado.getId_producto());
     }
 
@@ -91,8 +86,7 @@ class EnlacesServiceTest {
         
         when(webClientBuilder.build().get().uri(anyString()).retrieve().bodyToMono(ProductoExternoDTO.class).block())
             .thenReturn(productoFalso);
-
-        EnlacesDTO resultado = enlacesService.guardarEnlaces(enlacesDTO);
+        EnlacesDTO resultado = (EnlacesDTO) enlacesService.guardarEnlaces(enlacesDTO);
         assertNotNull(resultado);
         assertEquals(5, resultado.getId_producto());
     }

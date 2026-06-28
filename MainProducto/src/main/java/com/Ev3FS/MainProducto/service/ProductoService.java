@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 
 import com.Ev3FS.MainProducto.DTO.ProductoDTO;
 import com.Ev3FS.MainProducto.exception.ResourceNotFoundException;
-import com.Ev3FS.MainProducto.model.Producto;
 import com.Ev3FS.MainProducto.repository.ProductoRepository;
 
 import lombok.extern.slf4j.Slf4j;
+import model.Producto;
 
 @Slf4j
 @Service
@@ -52,7 +52,6 @@ public class ProductoService {
         nuevoProducto.setDescripcion(dto.getDescripcion());
         nuevoProducto.setFechaCreacion(dto.getFechaCreacion() != null ? dto.getFechaCreacion() : LocalDate.now());
         nuevoProducto.setIdCategoria(dto.getIdCategoria());
-
         Producto guardado = productoRepository.save(nuevoProducto);
         return convertirADto(guardado);
     }
