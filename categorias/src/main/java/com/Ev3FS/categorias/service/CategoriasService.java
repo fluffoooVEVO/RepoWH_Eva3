@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.Ev3FS.categorias.DTO.CategoriasDTO;
 import com.Ev3FS.categorias.DTO.ProductoExternoDTO;
@@ -14,6 +15,9 @@ import com.Ev3FS.categorias.model.Categorias;
 import com.Ev3FS.categorias.repository.CategoriaRepository;
 import com.Ev3FS.categorias.repository.CategoriasRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class CategoriasService {
 
@@ -24,7 +28,7 @@ public class CategoriasService {
     private CategoriasRepository categoriasRepository;
 
     @Autowired
-    private WebClient.Builder webClientBuilder;
+    private WebClient productoWebClient;
 
     public List<CategoriasDTO> obtenerTodas() {
         List<CategoriasDTO> listaDTOs = new ArrayList<>();
@@ -42,6 +46,8 @@ public class CategoriasService {
     }
 
     public CategoriasDTO guardarCategorias(CategoriasDTO dto) {
+        validarProductoExterno(dto.getId_producto());
+        
         Categorias entidadParaGuardar = convertirAEntidad(dto);
         Categorias guardada = categoriasRepository.save(entidadParaGuardar);
         return convertirADTO(guardada);
@@ -51,13 +57,14 @@ public class CategoriasService {
         Categorias existente = categoriasRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("No se puede actualizar. ID " + id + " no encontrado."));
         
-        if (dto.getId_categorias_producto() != null) {
+        if (dto.getId_categorias() != null) {
             Categoria cat = categoriaRepository.findById(dto.getId_categorias())
                 .orElseThrow(() -> new RuntimeException("Categoría no encontrada con ID: " + dto.getId_categorias()));
             existente.setCategoria(cat);
         }
         
         if (dto.getId_producto() != null) {
+            validarProductoExterno(dto.getId_producto());
             existente.setIdProducto(dto.getId_producto());
         }
         
@@ -88,22 +95,34 @@ public class CategoriasService {
         dto.setId_categorias_producto(categoria.getIdProductoCategoria());
         dto.setId_categorias(categoria.getCategoria().getIdCategoria());
         dto.setId_producto(categoria.getIdProducto());
-        
-        if (categoria.getIdProducto() != null) {
-            try {
-                ProductoExternoDTO productoRecuperado = webClientBuilder.build()
+        return dto;
+    }
+
+    private void validarProductoExterno(Integer idProducto) {
+        if (idProducto == null) {
+            throw new RuntimeException("El ID del producto no puede ser nulo");
+        }
+        log.info("Validando producto ID: {} en microservicio ", idProducto);
+        try {
+            ProductoExternoDTO producto = productoWebClient
                     .get()
-                    .uri("http://localhost:8080/" + categoria.getIdProducto())
+                    .uri("/api/v1/productos/{id}", idProducto)
                     .retrieve()
                     .bodyToMono(ProductoExternoDTO.class)
                     .block();
-
-                dto.setProducto(productoRecuperado);
-                
-            } catch (Exception e) {
-                dto.setProducto(null); 
+            if (producto == null || producto.getId_producto() == null) {
+                log.error("El producto con ID {} no existe en el microservicio externo", idProducto);
+                throw new RuntimeException("El producto con ID " + idProducto + " no existe en el sistema central");
             }
+            
+            log.info("Producto ID: {} validado correctamente", idProducto);
+            
+        } catch (WebClientResponseException.NotFound e) {
+            log.error("El producto con ID {} no existe en el microservicio externo", idProducto);
+            throw new RuntimeException("El producto con ID " + idProducto + " no existe en el sistema central");
+        } catch (Exception e) {
+            log.error("Error al comunicarse con el microservicio de productos: {}", e.getMessage());
+            throw new RuntimeException("Error de conexion con el microservicio de productos");
         }
-        return dto;
     }
 }
