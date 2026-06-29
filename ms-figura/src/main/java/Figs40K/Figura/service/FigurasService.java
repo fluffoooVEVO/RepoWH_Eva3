@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import Figs40K.Figura.DTO.FigurasDTO;
+import Figs40K.Figura.DTO.ProductoExternoDTO;
+import Figs40K.Figura.client.ProductoClient;
 import Figs40K.Figura.model.Figura;
 import Figs40K.Figura.model.Figuras;
 import Figs40K.Figura.repository.FiguraRepository;
@@ -20,11 +22,14 @@ public class FigurasService {
     private FigurasRepository figurasRepository;
     @Autowired
     private FiguraRepository figuraRepository;
+    @Autowired
+    private ProductoClient productoClient;
 
     private FigurasDTO convertirADTO(Figuras figura){
         FigurasDTO dto=new FigurasDTO();
         dto.setId_producto_figura(figura.getId_producto_figura());
         dto.setId_figura(figura.getFigura().getId_figura());
+        dto.setId_producto(figura.getId_producto());
         return dto;
     }
 
@@ -37,6 +42,11 @@ public class FigurasService {
             Figura figuraEntidad = figuraRepository.findById(dto.getId_figura())
                 .orElseThrow(() -> new RuntimeException("Figura no encontrada con ID: " + dto.getId_figura()));
             figura.setFigura(figuraEntidad);
+        }
+
+        if (dto.getId_producto() != null) {
+            ProductoExternoDTO producto = productoClient.obtenerProducto(dto.getId_producto());
+            figura.setId_producto(producto.getId_producto());
         }
 
         return figura;
@@ -87,6 +97,11 @@ public class FigurasService {
             Figura figurita = figuraRepository.findById(dto.getId_figura())
                 .orElseThrow(() -> new RuntimeException("Entidad Figura no encontrada con ID: " + dto.getId_figura()));
             existente.setFigura(figurita);
+        }
+
+        if (dto.getId_producto() != null) {
+            ProductoExternoDTO producto = productoClient.obtenerProducto(dto.getId_producto());
+            existente.setId_producto(producto.getId_producto());
         }
 
         Figuras actualizada = figurasRepository.save(existente);

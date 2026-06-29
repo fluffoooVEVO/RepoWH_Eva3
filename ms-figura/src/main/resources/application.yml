@@ -1,5 +1,5 @@
 server:
-  port: '8082'
+  port: '8091'
 
 springdoc:
   api-docs:
@@ -10,7 +10,9 @@ springdoc:
 # URL del microservicio de Edicion (comunicacion via WebClient)
 ms:
   edicion:
-    url: http://localhost:8081
+    url: http://localhost:8090
+  producto:
+    url: http://localhost:8080
 
 spring:
   application:

@@ -9,4 +9,7 @@ public class FigurasDTO {
 
     @NotNull(message = "Debe especificar el id de la figura")
     private Integer id_figura;
+
+    @NotNull(message = "Debe especificar el id del producto")
+    private Integer id_producto;
 }

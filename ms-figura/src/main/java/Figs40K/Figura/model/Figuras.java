@@ -1,5 +1,6 @@
 package Figs40K.Figura.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 @Data
 @Entity
 @Builder
@@ -19,6 +21,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Table(name = "Figuras")
 public class Figuras {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_producto_figura;
@@ -27,4 +30,8 @@ public class Figuras {
     @ManyToOne
     @JoinColumn(name = "id_figura", nullable = false)
     private Figura figura;
+
+    @NotNull(message="Debe asociarse a un producto")
+    @Column(nullable = false)
+    private Integer id_producto;
 }

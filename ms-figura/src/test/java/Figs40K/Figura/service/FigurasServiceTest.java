@@ -8,14 +8,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import Figs40K.Figura.DTO.FigurasDTO;
+import Figs40K.Figura.DTO.ProductoExternoDTO;
+import Figs40K.Figura.client.ProductoClient;
 import Figs40K.Figura.model.Figura;
 import Figs40K.Figura.model.Figuras;
 import Figs40K.Figura.repository.FiguraRepository;
@@ -29,6 +34,11 @@ public class FigurasServiceTest {
 
     @Mock
     private FiguraRepository figuraRepository;
+
+    // Antes no existia relacion con Producto. Ahora se valida via WebClient,
+    // igual que EdicionClient en FiguraService: se mockea el cliente, no una BD.
+    @Mock
+    private ProductoClient productoClient;
 
     @InjectMocks
     private FigurasService figurasService;
@@ -46,6 +56,7 @@ public class FigurasServiceTest {
         figurasEjemplo = new Figuras();
         figurasEjemplo.setId_producto_figura(1);
         figurasEjemplo.setFigura(figuraEjemplo);
+        figurasEjemplo.setId_producto(1);
     }
 
     @Test
@@ -67,9 +78,15 @@ public class FigurasServiceTest {
         // Given
         FigurasDTO dto = new FigurasDTO();
         dto.setId_figura(1);
+        dto.setId_producto(1);
+
+        ProductoExternoDTO productoExterno = new ProductoExternoDTO();
+        productoExterno.setId_producto(1);
+        productoExterno.setNombre("Caja Indomitus");
 
         when(figuraRepository.findById(1)).thenReturn(Optional.of(figuraEjemplo));
-        when(figurasRepository.save(org.mockito.ArgumentMatchers.any(Figuras.class)))
+        when(productoClient.obtenerProducto(1)).thenReturn(productoExterno);
+        when(figurasRepository.save(any(Figuras.class)))
             .thenReturn(figurasEjemplo);
 
         // When
@@ -78,7 +95,28 @@ public class FigurasServiceTest {
         // Then
         assertEquals(1, resultado.getId_figura());
         verify(figuraRepository).findById(1);
-        verify(figurasRepository, times(1)).save(org.mockito.ArgumentMatchers.any(Figuras.class));
+        verify(productoClient).obtenerProducto(1);
+        verify(figurasRepository, times(1)).save(any(Figuras.class));
+    }
+
+    @Test
+    void guardarFigura_deberiaLanzarExcepcion_cuandoProductoNoExiste() {
+        // Given
+        FigurasDTO dto = new FigurasDTO();
+        dto.setId_figura(1);
+        dto.setId_producto(99);
+
+        when(figuraRepository.findById(1)).thenReturn(Optional.of(figuraEjemplo));
+        when(productoClient.obtenerProducto(99))
+            .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe el Producto con id 99"));
+
+        // When & Then
+        assertThrows(ResponseStatusException.class, () -> {
+            figurasService.guardarFigura(dto);
+        });
+        verify(productoClient).obtenerProducto(99);
+        // Si Producto no existe, no debe llegar a guardar nada en la BD local.
+        verify(figurasRepository, times(0)).save(any(Figuras.class));
     }
 
     @Test
@@ -135,9 +173,14 @@ public class FigurasServiceTest {
         // Given
         FigurasDTO dto = new FigurasDTO();
         dto.setId_figura(1);
+        dto.setId_producto(1);
+
+        ProductoExternoDTO productoExterno = new ProductoExternoDTO();
+        productoExterno.setId_producto(1);
 
         when(figurasRepository.findById(1)).thenReturn(Optional.of(figurasEjemplo));
         when(figuraRepository.findById(1)).thenReturn(Optional.of(figuraEjemplo));
+        when(productoClient.obtenerProducto(1)).thenReturn(productoExterno);
         when(figurasRepository.save(figurasEjemplo)).thenReturn(figurasEjemplo);
 
         // When
@@ -145,6 +188,26 @@ public class FigurasServiceTest {
 
         // Then
         assertEquals(1, resultado.getId_figura());
+        verify(productoClient).obtenerProducto(1);
         verify(figurasRepository).save(figurasEjemplo);
+    }
+
+    @Test
+    void actualizarFigura_deberiaLanzarExcepcion_cuandoProductoNoExiste() {
+        // Given
+        FigurasDTO dto = new FigurasDTO();
+        dto.setId_figura(1);
+        dto.setId_producto(99);
+
+        when(figurasRepository.findById(1)).thenReturn(Optional.of(figurasEjemplo));
+        when(figuraRepository.findById(1)).thenReturn(Optional.of(figuraEjemplo));
+        when(productoClient.obtenerProducto(99))
+            .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe el Producto con id 99"));
+
+        // When & Then
+        assertThrows(ResponseStatusException.class, () -> {
+            figurasService.actualizarFigura(1, dto);
+        });
+        verify(productoClient).obtenerProducto(99);
     }
 }
