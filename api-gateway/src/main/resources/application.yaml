@@ -25,6 +25,18 @@ spring:
             - Path=/enlaces/**
           filters:
             - StripPrefix=1
+        - id: ms-edicion
+          uri: http://localhost:8092
+          predicates:
+            - Path=/edicion/**
+          filters:
+            - StripPrefix=1
+        - id: ms-figura
+          uri: http://localhost:8091
+          predicates:
+            - Path=/figura/**
+          filters:
+            - StripPrefix=1
 
 eureka:
   client:
@@ -48,3 +60,7 @@ springdoc:
         url: /categorias/api-docs
       - name: Enlaces API
         url: /enlaces/api-docs
+      - name: Edicion API
+        url: /edicion/api-docs
+      - name: Figura API
+        url: /figura/api-docs

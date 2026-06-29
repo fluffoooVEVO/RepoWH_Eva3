@@ -10,9 +10,9 @@ springdoc:
 # URL del microservicio de Edicion (comunicacion via WebClient)
 ms:
   edicion:
-    url: http://localhost:8090
+    url: http://localhost:8092
   producto:
-    url: http://localhost:8080
+    url: http://localhost:8086
 
 spring:
   application:
@@ -21,6 +21,16 @@ spring:
     show-sql: 'true'
   profiles:
     active: dev
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+    hostname: localhost
 
 ---
 

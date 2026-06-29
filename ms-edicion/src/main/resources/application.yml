@@ -1,5 +1,5 @@
 server:
-  port: '8090'
+  port: '8092'
 
 springdoc:
   api-docs:
@@ -19,6 +19,16 @@ spring:
     show-sql: 'true'
   profiles:
     active: dev
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+    hostname: localhost
 
 ---
 
