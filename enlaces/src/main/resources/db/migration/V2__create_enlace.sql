@@ -1,0 +1,5 @@
+CREATE TABLE Enlace (
+    id_enlace INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    url VARCHAR(255) NOT NULL
+);
