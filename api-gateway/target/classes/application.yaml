@@ -8,7 +8,7 @@ spring:
     gateway:
       routes:
         - id: main-producto
-          uri: http://localhost:8087
+          uri: http://localhost:8086
           predicates:
             - Path=/producto/**
           filters:
@@ -43,8 +43,8 @@ springdoc:
     path: /doc/swagger-ui/index.html
     urls:
       - name: Producto API
-        url: /api-docs 
+        url: /producto/api-docs
       - name: Categorias API
-        url: /api-docs 
+        url: /categorias/api-docs
       - name: Enlaces API
-        url: /api-docs 
+        url: /enlaces/api-docs

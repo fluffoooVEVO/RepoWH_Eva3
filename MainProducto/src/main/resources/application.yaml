@@ -7,6 +7,13 @@ springdoc:
   swagger-ui:
     path: /doc/swagger-ui/index.html
 
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
 spring:
   application:
     name: main-producto
@@ -15,9 +22,8 @@ spring:
     baseline-on-migrate: 'true'
   jpa:
     show-sql: 'true'
-
   profiles:
-    active: dev 
+    active: dev
 
 ---
 
