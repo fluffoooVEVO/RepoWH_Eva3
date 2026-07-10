@@ -33,6 +33,7 @@ eureka:
     prefer-ip-address: true
     hostname: localhost
 
+
 ---
 
 spring:
