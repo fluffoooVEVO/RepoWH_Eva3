@@ -10,13 +10,16 @@ springdoc:
 # URL del microservicio de Edicion (comunicacion via WebClient)
 ms:
   edicion:
-    url: http://localhost:8092
+    url: http://${EDICION_HOST:localhost}:8092
   producto:
-    url: http://localhost:8086
+    url: http://${PRODUCTO_HOST:localhost}:8086
 
 spring:
   application:
     name: ms-figura
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
   jpa:
     show-sql: 'true'
   profiles:
@@ -25,7 +28,7 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://${EUREKA_HOST:localhost}:8761/eureka/
     register-with-eureka: true
     fetch-registry: true
   instance:
@@ -40,7 +43,7 @@ spring:
       on-profile: dev
   datasource:
     username: root
-    url: jdbc:mysql://localhost:3306/db_figura_dev?createDatabaseIfNotExist=true
+    url: jdbc:mysql://${DATABASE_HOST:localhost}:3306/db_figura_dev?createDatabaseIfNotExist=true
     driverClassName: com.mysql.cj.jdbc.Driver
     password: ''
   jpa:
