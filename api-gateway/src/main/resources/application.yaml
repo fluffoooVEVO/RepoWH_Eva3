@@ -1,6 +1,3 @@
-server:
-  port: 8090
-
 spring:
   application:
     name: api-gateway
@@ -8,31 +5,31 @@ spring:
     gateway:
       routes:
         - id: main-producto
-          uri: http://localhost:8086
+          uri: http://main-producto:8086
           predicates:
             - Path=/producto/**
           filters:
             - StripPrefix=1
         - id: categorias
-          uri: http://localhost:8081
+          uri: http://categorias:8081
           predicates:
             - Path=/categorias/**
           filters:
             - StripPrefix=1
         - id: enlaces
-          uri: http://localhost:8082
+          uri: http://enlaces:8082
           predicates:
             - Path=/enlaces/**
           filters:
             - StripPrefix=1
         - id: ms-edicion
-          uri: http://localhost:8092
+          uri: http://ms-edicion:8092
           predicates:
             - Path=/edicion/**
           filters:
             - StripPrefix=1
         - id: ms-figura
-          uri: http://localhost:8091
+          uri: http://ms-figura:8091
           predicates:
             - Path=/figura/**
           filters:
@@ -41,26 +38,8 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://eureka-server:8761/eureka/
     register-with-eureka: true
     fetch-registry: true
   instance:
     prefer-ip-address: true
-    hostname: localhost
-
-springdoc:
-  api-docs:
-    path: /api-docs
-  swagger-ui:
-    path: /doc/swagger-ui/index.html
-    urls:
-      - name: Producto API
-        url: /producto/api-docs
-      - name: Categorias API
-        url: /categorias/api-docs
-      - name: Enlaces API
-        url: /enlaces/api-docs
-      - name: Edicion API
-        url: /edicion/api-docs
-      - name: Figura API
-        url: /figura/api-docs

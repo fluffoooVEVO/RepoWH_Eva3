@@ -7,6 +7,13 @@ springdoc:
   swagger-ui:
     path: /doc/swagger-ui/index.html
 
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
 spring:
   application:
     name: enlaces
@@ -15,9 +22,8 @@ spring:
     baseline-on-migrate: 'true'
   jpa:
     show-sql: 'true'
-
   profiles:
-    active: dev 
+    active: dev
 
 ---
 
@@ -27,37 +33,7 @@ spring:
       on-profile: dev
   datasource:
     username: root
-    url: jdbc:mysql://localhost:3306/db_enlaces_dev?createDatabaseIfNotExist=true
-    driverClassName: com.mysql.cj.jdbc.Driver
-    password: ''
-  jpa:
-    hibernate:
-      ddl-auto: update
-
----
-
-spring:
-  config:
-    activate:
-      on-profile: test
-  datasource:
-    username: root
-    url: jdbc:mysql://localhost:3306/db_enlaces_test?createDatabaseIfNotExist=true
-    driverClassName: com.mysql.cj.jdbc.Driver
-    password: ''
-  jpa:
-    hibernate:
-      ddl-auto: update
-
----
-
-spring:
-  config:
-    activate:
-      on-profile: prod
-  datasource:
-    username: root
-    url: jdbc:mysql://localhost:3306/db_enlaces_prod?createDatabaseIfNotExist=true
+    url: jdbc:mysql://mysql-enlaces:3306/db_enlaces_dev?createDatabaseIfNotExist=true
     driverClassName: com.mysql.cj.jdbc.Driver
     password: ''
   jpa:

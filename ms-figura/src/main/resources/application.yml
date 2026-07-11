@@ -7,12 +7,11 @@ springdoc:
   swagger-ui:
     path: /doc/swagger-ui/index.html
 
-# URL del microservicio de Edicion (comunicacion via WebClient)
 ms:
   edicion:
-    url: http://localhost:8092
+    url: http://ms-edicion:8092
   producto:
-    url: http://localhost:8086
+    url: http://main-producto:8086
 
 spring:
   application:
@@ -25,12 +24,11 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://eureka-server:8761/eureka/
     register-with-eureka: true
     fetch-registry: true
   instance:
     prefer-ip-address: true
-    hostname: localhost
 
 ---
 
@@ -40,39 +38,9 @@ spring:
       on-profile: dev
   datasource:
     username: root
-    url: jdbc:mysql://localhost:3306/db_figura_dev?createDatabaseIfNotExist=true
+    url: jdbc:mysql://mysql-figura:3306/db_figura_dev?createDatabaseIfNotExist=true
     driverClassName: com.mysql.cj.jdbc.Driver
     password: ''
   jpa:
     hibernate:
       ddl-auto: update
-
----
-
-spring:
-  config:
-    activate:
-      on-profile: test
-  datasource:
-    username: root
-    url: jdbc:mysql://localhost:3306/db_figura_test?createDatabaseIfNotExist=true
-    driverClassName: com.mysql.cj.jdbc.Driver
-    password: ''
-  jpa:
-    hibernate:
-      ddl-auto: update
-
----
-
-spring:
-  config:
-    activate:
-      on-profile: prod
-  datasource:
-    username: root
-    url: jdbc:mysql://localhost:3306/db_figura_prod?createDatabaseIfNotExist=true
-    driverClassName: com.mysql.cj.jdbc.Driver
-    password: ''
-  jpa:
-    hibernate:
-      ddl-auto: none
