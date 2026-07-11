@@ -1,4 +1,4 @@
-package Figs40K.Figura.service;
+package com.Ev3FS.Figura.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,13 +18,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import Figs40K.Figura.DTO.FigurasDTO;
-import Figs40K.Figura.DTO.ProductoExternoDTO;
-import Figs40K.Figura.client.ProductoClient;
-import Figs40K.Figura.model.Figura;
-import Figs40K.Figura.model.Figuras;
-import Figs40K.Figura.repository.FiguraRepository;
-import Figs40K.Figura.repository.FigurasRepository;
+import com.Ev3FS.Figura.DTO.FigurasDTO;
+import com.Ev3FS.Figura.DTO.ProductoExternoDTO;
+import com.Ev3FS.Figura.client.ProductoClient;
+import com.Ev3FS.Figura.model.Figura;
+import com.Ev3FS.Figura.model.Figuras;
+import com.Ev3FS.Figura.repository.FiguraRepository;
+import com.Ev3FS.Figura.repository.FigurasRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class FigurasServiceTest {

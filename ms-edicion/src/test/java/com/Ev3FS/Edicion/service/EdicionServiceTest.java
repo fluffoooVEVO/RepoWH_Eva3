@@ -1,4 +1,4 @@
-package Figs40K.Edicion.service;
+package com.Ev3FS.Edicion.service;
 
 import java.util.Optional;
 
@@ -14,8 +14,8 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
-import Figs40K.Edicion.model.Edicion;
-import Figs40K.Edicion.repository.EdicionRepository;
+import com.Ev3FS.Edicion.model.Edicion;
+import com.Ev3FS.Edicion.repository.EdicionRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class EdicionServiceTest {
