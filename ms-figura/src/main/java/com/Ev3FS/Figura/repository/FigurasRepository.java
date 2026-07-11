@@ -1,8 +1,8 @@
-package Figs40K.Figura.repository;
+package com.Ev3FS.Figura.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import Figs40K.Figura.model.Figuras;
+import com.Ev3FS.Figura.model.Figuras;
 
 public interface FigurasRepository extends JpaRepository<Figuras, Integer> {
 }

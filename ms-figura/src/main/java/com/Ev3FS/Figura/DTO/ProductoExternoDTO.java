@@ -1,4 +1,4 @@
-package Figs40K.Figura.DTO;
+package com.Ev3FS.Figura.DTO;
 
 import java.time.LocalDate;
 

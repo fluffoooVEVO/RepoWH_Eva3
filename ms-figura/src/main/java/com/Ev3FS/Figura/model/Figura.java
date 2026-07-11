@@ -1,6 +1,7 @@
-package Figs40K.Figura.model;
+package com.Ev3FS.Figura.model;
 
 import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -42,7 +43,7 @@ public class Figura {
 
     // Antes era @ManyToOne hacia Edicion. Al separar el microservicio de Edicion,
     // se guarda solo el id (sin FK). La existencia de la edicion se valida via WebClient hacia ms-edicion.
-    @NotNull(message="La figura debe pertenecer a una edicion")
+    @NotNull(message="La figura debe pertenecer a una edición")
     @Column(name = "id_edicion", nullable = false)
     private Integer id_edicion;
 

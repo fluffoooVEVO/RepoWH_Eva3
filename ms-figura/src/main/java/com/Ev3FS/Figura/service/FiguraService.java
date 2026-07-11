@@ -1,4 +1,4 @@
-package Figs40K.Figura.service;
+package com.Ev3FS.Figura.service;
 
 import java.util.List;
 
@@ -7,12 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import Figs40K.Figura.DTO.EdicionExternoDTO;
-import Figs40K.Figura.DTO.FiguraConEdicionDTO;
-import Figs40K.Figura.DTO.FiguraDTO;
-import Figs40K.Figura.client.EdicionClient;
-import Figs40K.Figura.model.Figura;
-import Figs40K.Figura.repository.FiguraRepository;
+import com.Ev3FS.Figura.DTO.EdicionExternoDTO;
+import com.Ev3FS.Figura.DTO.FiguraConEdicionDTO;
+import com.Ev3FS.Figura.DTO.FiguraDTO;
+import com.Ev3FS.Figura.client.EdicionClient;
+import com.Ev3FS.Figura.model.Figura;
+import com.Ev3FS.Figura.repository.FiguraRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -155,5 +155,5 @@ public class FiguraService {
         dto.setEdicion(edicion);
         return dto;
     }
- 
+
 }

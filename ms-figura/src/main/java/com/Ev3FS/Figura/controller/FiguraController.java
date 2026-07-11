@@ -1,8 +1,9 @@
-package Figs40K.Figura.controller;
+package com.Ev3FS.Figura.controller;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import Figs40K.Figura.DTO.FiguraConEdicionDTO;
-import Figs40K.Figura.DTO.FiguraDTO;
-import Figs40K.Figura.assemblers.FiguraConEdicionModelAssembler;
-import Figs40K.Figura.model.Figura;
-import Figs40K.Figura.service.FiguraService;
+import com.Ev3FS.Figura.DTO.FiguraConEdicionDTO;
+import com.Ev3FS.Figura.DTO.FiguraDTO;
+import com.Ev3FS.Figura.assemblers.FiguraConEdicionModelAssembler;
+import com.Ev3FS.Figura.model.Figura;
+import com.Ev3FS.Figura.service.FiguraService;
 
 @RestController
 @RequestMapping("/api/v1/figura")
@@ -52,7 +53,7 @@ public class FiguraController {
     // Demostracion de comunicacion entre microservicios: arma la respuesta consultando ms-edicion via WebClient.
     // El Assembler agrega los links HATEOAS (self hacia este mismo endpoint, edicion hacia ms-edicion).
     @GetMapping("/{id}/con-edicion")
-    public ResponseEntity<FiguraConEdicionDTO> obtenerConEdicion(@PathVariable("id") Integer id_Figura){
+    public ResponseEntity<EntityModel<FiguraConEdicionDTO>> obtenerConEdicion(@PathVariable("id") Integer id_Figura){
         FiguraConEdicionDTO dto = figuraService.obtenerFiguraConEdicion(id_Figura);
         return ResponseEntity.ok(edicionAssembler.toModel(dto));
     }

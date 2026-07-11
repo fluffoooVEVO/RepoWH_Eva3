@@ -1,4 +1,4 @@
-package Figs40K.Figura.config;
+package com.Ev3FS.Figura.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package Figs40K.Figura.controller;
+package com.Ev3FS.Figura.controller;
 
 import java.util.List;
 
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import Figs40K.Figura.DTO.FigurasDTO;
-import Figs40K.Figura.service.FigurasService;
+import com.Ev3FS.Figura.DTO.FigurasDTO;
+import com.Ev3FS.Figura.service.FigurasService;
 
 @RestController
 @RequestMapping("/api/v1/figuras")

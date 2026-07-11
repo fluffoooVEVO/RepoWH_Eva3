@@ -1,4 +1,4 @@
-package Figs40K.Figura.client;
+package com.Ev3FS.Figura.client;
 
 import java.time.Duration;
 
@@ -10,7 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
 import org.springframework.web.server.ResponseStatusException;
 
-import Figs40K.Figura.DTO.EdicionExternoDTO;
+import com.Ev3FS.Figura.DTO.EdicionExternoDTO;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
@@ -26,7 +26,7 @@ public class EdicionClient {
     private final String edicionBaseUrl;
 
     public EdicionClient(WebClient.Builder webClientBuilder,
-                        @Value("${ms.edicion.url}") String edicionBaseUrl) {
+                          @Value("${ms.edicion.url}") String edicionBaseUrl) {
         this.edicionBaseUrl = edicionBaseUrl;
 
         HttpClient httpClient = HttpClient.create()

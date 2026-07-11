@@ -1,4 +1,4 @@
-package Figs40K.Figura.repository;
+package com.Ev3FS.Figura.repository;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import Figs40K.Figura.model.Figura;
+import com.Ev3FS.Figura.model.Figura;
 
 public interface FiguraRepository extends JpaRepository<Figura, Integer> {
 

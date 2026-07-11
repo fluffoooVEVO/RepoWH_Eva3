@@ -1,4 +1,4 @@
-package Figs40K.Figura.model;
+package com.Ev3FS.Figura.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

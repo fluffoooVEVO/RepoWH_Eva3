@@ -1,33 +1,33 @@
-package Figs40K.Figura.assemblers;
+package com.Ev3FS.Figura.assemblers;
 
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.stereotype.Component;
 
-import Figs40K.Figura.DTO.FiguraConEdicionDTO;
-import Figs40K.Figura.client.EdicionClient;
-import Figs40K.Figura.controller.FiguraController;
+import com.Ev3FS.Figura.DTO.FiguraConEdicionDTO;
+import com.Ev3FS.Figura.client.EdicionClient;
+import com.Ev3FS.Figura.controller.FiguraController;
 
 @Component
-public class FiguraConEdicionModelAssembler implements RepresentationModelAssembler<FiguraConEdicionDTO, FiguraConEdicionDTO> {
+public class FiguraConEdicionModelAssembler implements RepresentationModelAssembler<FiguraConEdicionDTO, EntityModel<FiguraConEdicionDTO>> {
     private final EdicionClient edicionClient;
     public FiguraConEdicionModelAssembler(EdicionClient edicionClient) {
         this.edicionClient = edicionClient;
     }
     @Override
-    public FiguraConEdicionDTO toModel(FiguraConEdicionDTO dto) {
-        dto.add(
-            linkTo(methodOn(FiguraController.class).obtenerConEdicion(dto.getId_figura()))
-                .withSelfRel()
+    public EntityModel<FiguraConEdicionDTO> toModel(FiguraConEdicionDTO dto) {
+        EntityModel<FiguraConEdicionDTO> model = EntityModel.of(dto,
+            linkTo(methodOn(FiguraController.class).obtenerConEdicion(dto.getId_figura())).withSelfRel()
         );
         if (dto.getEdicion() != null) {
-            dto.add(
+            model.add(
                 Link.of(edicionClient.getBaseUrl() + "/api/v1/edicion/" + dto.getEdicion().getId_edicion())
                     .withRel("edicion")
             );
         }
-        return dto;
+        return model;
     }
 }
