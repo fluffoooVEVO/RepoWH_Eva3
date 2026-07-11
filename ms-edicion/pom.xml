@@ -8,7 +8,7 @@
 		<version>4.1.0</version>
 		<relativePath/>
 	</parent>
-	<groupId>Figs40K</groupId>
+	<groupId>com.Ev3FS</groupId>
 	<artifactId>ms-edicion</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>ms-edicion</name>

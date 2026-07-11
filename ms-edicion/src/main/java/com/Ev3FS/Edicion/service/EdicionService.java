@@ -1,4 +1,4 @@
-package Figs40K.Edicion.service;
+package com.Ev3FS.Edicion.service;
 
 import java.util.List;
 
@@ -7,9 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import Figs40K.Edicion.DTO.EdicionDTO;
-import Figs40K.Edicion.model.Edicion;
-import Figs40K.Edicion.repository.EdicionRepository;
+import com.Ev3FS.Edicion.DTO.EdicionDTO;
+import com.Ev3FS.Edicion.model.Edicion;
+import com.Ev3FS.Edicion.repository.EdicionRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

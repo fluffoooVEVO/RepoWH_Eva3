@@ -1,4 +1,4 @@
-package Figs40K.Edicion;
+package com.Ev3FS.Edicion;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

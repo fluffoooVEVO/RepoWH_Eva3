@@ -132,6 +132,10 @@ services:
   ms-edicion:
     build: ./ms-edicion
     container_name: ms-edicion
+    environment:
+      DATABASE_HOST: mysql-edicion
+      EUREKA_HOST: eureka-server
+      FIGURA_HOST: ms-figura
     networks:
       - network-repowh
     depends_on:
@@ -160,6 +164,11 @@ services:
   ms-figura:
     build: ./ms-figura
     container_name: ms-figura
+    environment:
+      DATABASE_HOST: mysql-figura
+      EUREKA_HOST: eureka-server
+      EDICION_HOST: ms-edicion
+      PRODUCTO_HOST: main-producto
     networks:
       - network-repowh
     depends_on:

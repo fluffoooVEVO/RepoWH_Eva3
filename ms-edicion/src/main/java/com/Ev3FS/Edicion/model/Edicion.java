@@ -1,4 +1,4 @@
-package Figs40K.Edicion.model;
+package com.Ev3FS.Edicion.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,5 +37,4 @@ public class Edicion {
     @Column(nullable=false)
     @Builder.Default
     private Boolean status = true;
-
 }

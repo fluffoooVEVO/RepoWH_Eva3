@@ -1,8 +1,10 @@
-package Figs40K.Edicion.controller;
+package com.Ev3FS.Edicion.controller;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import Figs40K.Edicion.DTO.EdicionDTO;
-import Figs40K.Edicion.assemblers.EdicionModelAssembler;
-import Figs40K.Edicion.model.Edicion;
-import Figs40K.Edicion.service.EdicionService;
+import com.Ev3FS.Edicion.DTO.EdicionDTO;
+import com.Ev3FS.Edicion.assemblers.EdicionModelAssembler;
+import com.Ev3FS.Edicion.model.Edicion;
+import com.Ev3FS.Edicion.service.EdicionService;
 
 @RestController
 @RequestMapping("/api/v1/edicion")
@@ -29,17 +31,17 @@ public class EdicionController {
     private EdicionModelAssembler edicionAssembler;
 
     @GetMapping
-    public ResponseEntity<List<EdicionDTO>> obtenerEdiciones(){
+    public ResponseEntity<CollectionModel<EntityModel<EdicionDTO>>> obtenerEdiciones(){
         List<Edicion> ediciones = edicionService.obtenerTodos();
-        List<EdicionDTO> dtos = edicionService.convertirListaADTO(ediciones)
-            .stream()
+        List<EdicionDTO> dtos = edicionService.convertirListaADTO(ediciones);
+        List<EntityModel<EdicionDTO>> modelos = dtos.stream()
             .map(edicionAssembler::toModel)
             .toList();
-        return ResponseEntity.ok(dtos);
+        return ResponseEntity.ok(CollectionModel.of(modelos));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EdicionDTO> obtenerPorId(@PathVariable("id") Integer id_Edicion){
+    public ResponseEntity<EntityModel<EdicionDTO>> obtenerPorId(@PathVariable("id") Integer id_Edicion){
         Edicion edicion = edicionService.obtenerPorId(id_Edicion);
         EdicionDTO dto = edicionService.convertirADTO(edicion);
         return ResponseEntity.ok(edicionAssembler.toModel(dto));
