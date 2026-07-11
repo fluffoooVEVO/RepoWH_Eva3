@@ -44,7 +44,6 @@ public class CategoriaController {
     private CategoriaService categoriaService;
     @Autowired
     private CategoriaModelAssembler assembler;
-
     @GetMapping
     @Operation(
         summary = "Obtener todas las categorias",
@@ -117,7 +116,7 @@ public class CategoriaController {
             List<CategoriaDTO> categorias = categoriaService.obtenerStatusTrueDTO();
             if (categorias.isEmpty()) {
                 EntityModel<?> vacio = EntityModel.of(
-                Map.of("mensaje", "No hay categorias"), // mensaje cuando la lista esta vacia
+                Map.of("mensaje", "No hay categorias"),// mensaje cuando la lista esta vacia
                 linkTo(methodOn(CategoriaController.class)
                     .guardarCategoria(null)) // apunta al metodo guardar
                     .withRel("ver ids disponibles") // le pone el nombre al link

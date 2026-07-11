@@ -1,0 +1,173 @@
+version: '3.8'
+
+services:
+  # ===== EUREKA =====
+  eureka-server:
+    build: ./eureka-server
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - network-repowh
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # ===== API GATEWAY =====
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8090:8090"
+    networks:
+      - network-repowh
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+
+  # ===== CATEGORIAS =====
+  mysql-categorias:
+    image: mysql:8.0
+    container_name: mysql-categorias
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: db_categorias_dev
+    ports:
+      - "3307:3306"
+    networks:
+      - network-repowh
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  categorias:
+    build: ./categorias
+    container_name: categorias
+    networks:
+      - network-repowh
+    depends_on:
+      mysql-categorias:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+
+  # ===== ENLACES =====
+  mysql-enlaces:
+    image: mysql:8.0
+    container_name: mysql-enlaces
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: db_enlaces_dev
+    ports:
+      - "3308:3306"
+    networks:
+      - network-repowh
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  enlaces:
+    build: ./enlaces
+    container_name: enlaces
+    networks:
+      - network-repowh
+    depends_on:
+      mysql-enlaces:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+
+  # ===== MAIN PRODUCTO =====
+  mysql-producto:
+    image: mysql:8.0
+    container_name: mysql-producto
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: db_producto_dev
+    ports:
+      - "3309:3306"
+    networks:
+      - network-repowh
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  main-producto:
+    build: ./MainProducto
+    container_name: main-producto
+    networks:
+      - network-repowh
+    depends_on:
+      mysql-producto:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+
+  # ===== MS-EDICION =====
+  mysql-edicion:
+    image: mysql:8.0
+    container_name: mysql-edicion
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: db_edicion_dev
+    ports:
+      - "3310:3306"
+    networks:
+      - network-repowh
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  ms-edicion:
+    build: ./ms-edicion
+    container_name: ms-edicion
+    networks:
+      - network-repowh
+    depends_on:
+      mysql-edicion:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+
+  # ===== MS-FIGURA =====
+  mysql-figura:
+    image: mysql:8.0
+    container_name: mysql-figura
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: db_figura_dev
+    ports:
+      - "3311:3306"
+    networks:
+      - network-repowh
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  ms-figura:
+    build: ./ms-figura
+    container_name: ms-figura
+    networks:
+      - network-repowh
+    depends_on:
+      mysql-figura:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+
+networks:
+  network-repowh:
+    driver: bridge
