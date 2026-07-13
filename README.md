@@ -13,7 +13,7 @@ Sistema de microservicios para la gestión de un catálogo de figuras colecciona
 
 ## Arquitectura del sistema y responsables
 
-El proyecto está compuesto por 10 microservicios independientes, cada uno con su propia base de datos MySQL cuando corresponde, registrados en un servidor de descubrimiento (Eureka) y expuestos a través de un API Gateway centralizado. El proyecto inició con 7 microservicios base y fue evolucionando en número y alcance conforme avanzó el desarrollo.
+El proyecto está compuesto por 10 microservicios independientes, cada uno con su propia base de datos MySQL cuando corresponde, registrados en un servidor de descubrimiento (Eureka) y expuestos a través de un API Gateway centralizado. El proyecto inició con 10 microservicios base y fue evolucionando en número y alcance conforme avanzó el desarrollo.
 
 | Servicio | Puerto | Responsable |
 |---|---|---|
@@ -25,7 +25,6 @@ El proyecto está compuesto por 10 microservicios independientes, cada uno con s
 | ms-edicion | 8092 | Javier |
 | ms-figura | 8091 | Javier |
 
-*Nota: la tabla detalla los microservicios verificados directamente por este documento; el conteo total del proyecto (10) incluye además otros servicios incorporados durante el desarrollo por el resto del equipo.*
 
 ### Links importantes
 
