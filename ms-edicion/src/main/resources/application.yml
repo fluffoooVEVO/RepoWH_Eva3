@@ -7,13 +7,17 @@ springdoc:
   swagger-ui:
     path: /doc/swagger-ui/index.html
 
+# URL del microservicio de Figura (usada solo para construir el link HATEOAS "figuras")
 ms:
   figura:
-    url: http://ms-figura:8091
+    url: http://${FIGURA_HOST:localhost}:8091
 
 spring:
   application:
     name: ms-edicion
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
   jpa:
     show-sql: 'true'
   profiles:
@@ -22,11 +26,12 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://eureka-server:8761/eureka/
+      defaultZone: http://${EUREKA_HOST:localhost}:8761/eureka/
     register-with-eureka: true
     fetch-registry: true
   instance:
     prefer-ip-address: true
+    hostname: localhost
 
 ---
 
@@ -36,9 +41,39 @@ spring:
       on-profile: dev
   datasource:
     username: root
-    url: jdbc:mysql://mysql-edicion:3306/db_edicion_dev?createDatabaseIfNotExist=true
+    url: jdbc:mysql://${DATABASE_HOST:localhost}:3306/db_edicion_dev?createDatabaseIfNotExist=true
     driverClassName: com.mysql.cj.jdbc.Driver
     password: ''
   jpa:
     hibernate:
       ddl-auto: update
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    username: root
+    url: jdbc:mysql://localhost:3306/db_edicion_test?createDatabaseIfNotExist=true
+    driverClassName: com.mysql.cj.jdbc.Driver
+    password: ''
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    username: root
+    url: jdbc:mysql://localhost:3306/db_edicion_prod?createDatabaseIfNotExist=true
+    driverClassName: com.mysql.cj.jdbc.Driver
+    password: ''
+  jpa:
+    hibernate:
+      ddl-auto: none
